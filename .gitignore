@@ -1,0 +1,26 @@
+# Android
+*.iml
+.gradle
+/local.properties
+/.idea/
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+
+# Kotlin Multiplatform
+.kotlin
+shared/build
+app/build
+wear/build
+
+# Node / Firebase
+node_modules/
+functions/node_modules/
+*-debug.log
+*-error.log
+
+# Misc
+*.swp
+*~

@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Agenda Padel</string>
+    <string name="agenda_padel">AGENDA PADEL</string>
+    <string name="calendar">Calendrier</string>
+    <string name="stats">Statistiques</string>
+    <string name="my_stats">Mes Stats</string>
+    <string name="group_ranking">Groupe</string>
+    <string name="performance_dashboard">Tableau de Bord</string>
+    <string name="activity_this_month">Activité ce mois</string>
+    <string name="matches">Matchs</string>
+    <string name="intensity_play">Intensité de jeu (90 derniers jours)</string>
+    <string name="total_matches">Total Matchs</string>
+    <string name="play_hours">Heures de jeu</string>
+    <string name="favorite_day">Jour Favori</string>
+    <string name="duo_matches">Matchs Duo</string>
+    <string name="pro_dashboard">Dashboard Pro</string>
+    <string name="player_ranking">Classement des joueurs</string>
+    <string name="player_ranking_desc">Découvrez qui sont les meilleurs partenaires du groupe.</string>
+    <string name="top_player">Top Joueur</string>
+    <string name="no_ratings">Aucune note</string>
+    <string name="ratings_received">%d note(s) reçue(s)</string>
+    <string name="select_partner_to_rate">Sélectionnez un partenaire pour le noter :</string>
+    <string name="did_not_play">Nous n\'avons finalement pas joué</string>
+    <string name="rate_partner">Note ton partenaire / adversaire</string>
+    <string name="my_performance">Ma performance / Plaisir</string>
+    <string name="mood_feeling">Niveau de jeu / Comportement</string>
+    <string name="validate_match">Valider le match</string>
+    <string name="match_already_validated">Match déjà validé par un partenaire</string>
+</resources>

@@ -1,0 +1,59 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Récupère les groupes de l'utilisateur
+    function getUserGroups() {
+      let profilePath = /databases/$(database)/documents/profiles/$(request.auth.uid);
+      return exists(profilePath) ? get(profilePath).data.groupIds : [];
+    }
+
+    // 1. PROFILS UTILISATEURS
+    match /profiles/{userId} {
+      allow read: if request.auth != null && (
+        request.auth.uid == userId ||
+        resource.data.groupIds.hasAny(getUserGroups())
+      );
+      allow write: if request.auth != null && request.auth.uid == userId
+               && ((resource == null && request.resource.data.premium == false) || (resource != null && request.resource.data.premium == resource.data.premium))
+               && ((resource == null) || (request.resource.data.inviteCode == resource.data.inviteCode));
+    }
+
+    // 2. CRÉNEAUX / DISPONIBILITÉS
+    match /creneaux/{id} {
+      allow read: if request.auth != null && (resource.data.userId == request.auth.uid || resource.data.groupId in getUserGroups());
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid && (request.resource.data.groupId == "" || request.resource.data.groupId in getUserGroups());
+      allow update, delete: if request.auth != null && (resource.data.userId == request.auth.uid || request.auth.uid in resource.data.participantIds);
+    }
+
+    // 3. INVITATIONS DUO
+    match /duo_invitations/{id} {
+      allow read, update, delete: if request.auth != null && (request.auth.uid == resource.data.toId || request.auth.uid == resource.data.fromId);
+      allow create: if request.auth != null && request.resource.data.fromId == request.auth.uid;
+    }
+
+    // 4. HISTORIQUE / STATS
+    match /stats_history/{id} {
+      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow update: if request.auth != null && resource.data.userId == request.auth.uid && request.resource.data.userId == request.auth.uid;
+    }
+
+    // 5. NOTES DES PARTENAIRES (SÉCURISÉ)
+    match /partner_ratings/{id} {
+      allow read: if request.auth != null && (
+        (resource.data.get('raterId', '') == request.auth.uid) ||
+        (resource.data.get('ratedId', '') == request.auth.uid) ||
+        (resource.data.get('groupId', '') in getUserGroups())
+      );
+      allow create: if request.auth != null && request.resource.data.raterId == request.auth.uid;
+      allow update: if request.auth != null && resource.data.raterId == request.auth.uid && request.resource.data.raterId == request.auth.uid;
+    }
+
+    // 6. NOMS DE GROUPES
+    match /groups/{groupId} {
+      allow read: if request.auth != null && groupId in getUserGroups();
+      allow write: if request.auth != null && ((resource == null && request.resource.data.createdBy == request.auth.uid) || (resource != null && resource.data.createdBy == request.auth.uid));
+    }
+  }
+}

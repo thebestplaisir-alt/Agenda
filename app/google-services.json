@@ -1,0 +1,116 @@
+{
+  "project_info": {
+    "project_number": "159581392137",
+    "project_id": "agenda-sport-c4e9e",
+    "storage_bucket": "agenda-sport-c4e9e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:159581392137:android:c360d437adce3fb683d7d8",
+        "android_client_info": {
+          "package_name": "com.inchios.agenda"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "159581392137-9iffmfabsnh315eocscgv9g8mh7ejsfj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inchios.agenda",
+            "certificate_hash": "6650daf4d0469baf08e5b43cf64695d60aa6d97c"
+          }
+        },
+        {
+          "client_id": "159581392137-d0r9nd8gkjoj4kjp1meuegm07l7be4j9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inchios.agenda",
+            "certificate_hash": "a0780003d127543d66154fb3f9bfb0fbe79a4b85"
+          }
+        },
+        {
+          "client_id": "159581392137-avlu2jf2u497830ambkpmqghhm1hb0ig.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgD95q6aezI1v8hEKgw98OOIQKx6aZer4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "159581392137-avlu2jf2u497830ambkpmqghhm1hb0ig.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:159581392137:android:37f949f9ac72ea4283d7d8",
+        "android_client_info": {
+          "package_name": "com.inchios.agendapadel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "159581392137-h3bsqig89mmbp035vddgb4qfgkh0tktk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inchios.agendapadel",
+            "certificate_hash": "b8b3b02faf9897a306cdd7fdd0ccada07a5181c6"
+          }
+        },
+        {
+          "client_id": "159581392137-l93k3s3rl6nrvdt92ujfh78epndp9uie.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inchios.agendapadel",
+            "certificate_hash": "6650daf4d0469baf08e5b43cf64695d60aa6d97c"
+          }
+        },
+        {
+          "client_id": "159581392137-lhobvfk55vn2fie3nr1r9834fgmteihn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inchios.agendapadel",
+            "certificate_hash": "4bb7baa47ab116480ac79817bed889843eff00ae"
+          }
+        },
+        {
+          "client_id": "159581392137-nds8uqcg2jmngv0g439jv2rmh3oq16ig.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inchios.agendapadel",
+            "certificate_hash": "1689f77b6db3350b527fe9ade2d2aba0036c71ca"
+          }
+        },
+        {
+          "client_id": "159581392137-avlu2jf2u497830ambkpmqghhm1hb0ig.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgD95q6aezI1v8hEKgw98OOIQKx6aZer4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "159581392137-avlu2jf2u497830ambkpmqghhm1hb0ig.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
