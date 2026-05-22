@@ -35,7 +35,7 @@ kotlin {
     iosX64()
     iosArm64()
     iosSimulatorArm64()
-    
+
     sourceSets {
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -45,11 +45,11 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            
+
             // Firebase Multiplatform
             implementation(libs.firebase.kotlin.auth)
             implementation(libs.firebase.kotlin.firestore)
-            
+
             implementation(libs.kotlinx.datetime)
         }
         androidMain.dependencies {
