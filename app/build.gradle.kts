@@ -32,9 +32,10 @@ android {
             }
 
             val sFile = properties.getProperty("RELEASE_STORE_FILE") ?: System.getenv("RELEASE_STORE_FILE")
-            storeFile = sFile?.let { 
-                // Si la propriété contient un nom de variable (ex: CM_KEYSTORE_PATH), on récupère sa valeur
-                val actualPath = System.getenv(it) ?: it
+            storeFile = sFile?.let { pathOrVar ->
+                // On cherche d'abord si c'est une variable d'environnement (ex: CM_KEYSTORE)
+                // Sinon on utilise la valeur brute comme chemin
+                val actualPath = System.getenv(pathOrVar) ?: pathOrVar
                 val possibleFile = file(actualPath)
                 if (possibleFile.exists()) possibleFile else rootProject.file(actualPath)
             }
