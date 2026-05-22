@@ -43,6 +43,7 @@ workflows:
     scripts:
       - name: Generate Xcode Project
         script: |
+          brew install xcodegen
           cd iosApp
           xcodegen generate
       - name: Install CocoaPods
