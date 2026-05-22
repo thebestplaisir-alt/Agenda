@@ -9,9 +9,9 @@ Pod::Spec.new do |spec|
     spec.vendored_frameworks      = 'build/cocoapods/framework/shared.framework'
     spec.libraries                = 'c++'
     spec.ios.deployment_target    = '16.0'
-    spec.dependency 'FirebaseAuth', '~> 11.4.0'
-    spec.dependency 'FirebaseCore', '~> 11.4.0'
-    spec.dependency 'FirebaseFirestore', '~> 11.4.0'
+    spec.dependency 'FirebaseAuth', '11.4.0'
+    spec.dependency 'FirebaseCore', '11.4.0'
+    spec.dependency 'FirebaseFirestore', '11.4.0'
                 
     if !Dir.exist?('build/cocoapods/framework/shared.framework') || Dir.empty?('build/cocoapods/framework/shared.framework')
         raise "
@@ -28,6 +28,10 @@ Pod::Spec.new do |spec|
         'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO',
     }
                 
+    spec.pod_target_xcconfig = {
+        'KOTLIN_PROJECT_PATH' => ':shared',
+        'PRODUCT_MODULE_NAME' => 'shared',
+    }
                 
     spec.script_phases = [
         {
@@ -41,7 +45,7 @@ Pod::Spec.new do |spec|
                 fi
                 set -ev
                 REPO_ROOT="$PODS_TARGET_SRCROOT"
-                "$REPO_ROOT/../gradlew" -p "$REPO_ROOT" $KOTLIN_PROJECT_PATH:syncFramework \
+                "$REPO_ROOT/../gradlew" -p "$REPO_ROOT" $KOTLIN_PROJECT_PATH:embedAndSignAppleFrameworkForXcode \
                     -Pkotlin.native.cocoapods.platform=$PLATFORM_NAME \
                     -Pkotlin.native.cocoapods.archs="$ARCHS" \
                     -Pkotlin.native.cocoapods.configuration="$CONFIGURATION"
@@ -49,5 +53,4 @@ Pod::Spec.new do |spec|
         }
     ]
     spec.resources = ['build\compose\cocoapods\compose-resources']
-    spec.pod_target_xcconfig = { 'HEADER_SEARCH_PATHS' => '$(inherited) $PODS_ROOT/Firebase/Core/Sources' }
 end
