@@ -28,13 +28,14 @@ android {
             val properties = Properties()
             val propertiesFile = rootProject.file("local.properties")
             if (propertiesFile.exists()) {
-                properties.load(propertiesFile.inputStream())
+                propertiesFile.inputStream().use { properties.load(it) }
             }
 
-            storeFile = properties.getProperty("RELEASE_STORE_FILE")?.let { file(it) }
-            storePassword = properties.getProperty("RELEASE_STORE_PASSWORD")
-            keyAlias = properties.getProperty("RELEASE_KEY_ALIAS")
-            keyPassword = properties.getProperty("RELEASE_KEY_PASSWORD")
+            val sFile = properties.getProperty("RELEASE_STORE_FILE") ?: System.getenv("RELEASE_STORE_FILE")
+            storeFile = sFile?.let { file(it) }
+            storePassword = properties.getProperty("RELEASE_STORE_PASSWORD") ?: System.getenv("RELEASE_STORE_PASSWORD")
+            keyAlias = properties.getProperty("RELEASE_KEY_ALIAS") ?: System.getenv("RELEASE_KEY_ALIAS")
+            keyPassword = properties.getProperty("RELEASE_KEY_PASSWORD") ?: System.getenv("RELEASE_KEY_PASSWORD")
         }
     }
 
@@ -42,7 +43,12 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            signingConfig = signingConfigs.getByName("release")
+            
+            // On n'applique la config de signature que si les infos sont présentes
+            val isSigningConfigured = signingConfigs.getByName("release").storeFile != null
+            if (isSigningConfigured) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
