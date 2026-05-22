@@ -33,11 +33,21 @@ android {
 
             val sFile = properties.getProperty("RELEASE_STORE_FILE") ?: System.getenv("RELEASE_STORE_FILE")
             storeFile = sFile?.let { pathOrVar ->
-                // On cherche d'abord si c'est une variable d'environnement (ex: CM_KEYSTORE)
-                // Sinon on utilise la valeur brute comme chemin
-                val actualPath = System.getenv(pathOrVar) ?: pathOrVar
+                // 1. On cherche d'abord si c'est une variable d'environnement directe
+                // 2. Sinon on teste les variables connues de Codemagic (CM_KEYSTORE_PATH, etc.)
+                // 3. Sinon on utilise la valeur brute comme chemin
+                val actualPath = System.getenv(pathOrVar) 
+                    ?: System.getenv("CM_KEYSTORE_PATH") 
+                    ?: System.getenv("FNC_KEYSTORE_PATH")
+                    ?: pathOrVar
+                
                 val possibleFile = file(actualPath)
-                if (possibleFile.exists()) possibleFile else rootProject.file(actualPath)
+                if (possibleFile.exists()) {
+                    possibleFile 
+                } else {
+                    val rootFile = rootProject.file(actualPath)
+                    if (rootFile.exists()) rootFile else null
+                }
             }
             storePassword = properties.getProperty("RELEASE_STORE_PASSWORD") ?: System.getenv("RELEASE_STORE_PASSWORD")
             keyAlias = properties.getProperty("RELEASE_KEY_ALIAS") ?: System.getenv("RELEASE_KEY_ALIAS")
