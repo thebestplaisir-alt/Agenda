@@ -25,7 +25,7 @@ kotlin {
         ios.deploymentTarget = "16.0"
         framework {
             baseName = "shared"
-            isStatic = true
+            isStatic = false
         }
         pod("FirebaseCore")
         pod("FirebaseAuth")
