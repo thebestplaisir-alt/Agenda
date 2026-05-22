@@ -1,5 +1,6 @@
 package com.inchios.agenda
 
+import com.inchios.agenda.android.Availability
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

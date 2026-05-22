@@ -1,5 +1,6 @@
 package com.inchios.agenda
 
+import com.inchios.agenda.android.Availability
 import android.app.Activity
 import android.Manifest
 import android.app.NotificationChannel
@@ -193,7 +194,7 @@ class MainActivity : ComponentActivity() {
                                 AppScreen.STATS -> {
                                     val userStats by viewModel.userStats.collectAsStateWithLifecycle()
                                     val groupRatings by viewModel.groupRatings.collectAsStateWithLifecycle()
-                                    StatsScreen(
+                                    AndroidStatsScreen(
                                         isPremium = userProfile?.premium == true,
                                         stats = userStats,
                                         groupRatings = groupRatings,

@@ -2,14 +2,6 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-// --- FORCE L'ARCHITECTURE AVANT TOUT ---
-System.setProperty("os.arch", "x86_64")
-System.setProperty("skiko.arch", "x64")
-System.setProperty("os.detected.arch", "x86_64")
-System.setProperty("os.detected.name", "osx")
-System.setProperty("os.detected.classifier", "osx-x86_64")
-// ----------------------------------------
-
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.jetbrains.compose)
@@ -19,10 +11,6 @@ plugins {
 }
 
 kotlin {
-    System.setProperty("os.arch", "x86_64")
-    // Force l'architecture pour Kotlin Native sur les machines AMD/Intel non reconnues
-    project.extra.set("kotlin.native.hostArchitecture", "x86_64")
-
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
@@ -65,7 +53,7 @@ kotlin {
             implementation(libs.kotlinx.datetime)
         }
         androidMain.dependencies {
-            implementation(libs.androidx.ui.tooling.preview)
+            implementation("androidx.compose.ui:ui-tooling-preview:1.7.8")
             implementation(libs.androidx.activity.compose)
         }
         iosMain.dependencies {

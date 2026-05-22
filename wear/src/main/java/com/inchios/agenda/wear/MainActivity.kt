@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.material.*
 import com.google.android.horologist.compose.layout.AppScaffold
 import com.google.android.horologist.compose.layout.ScreenScaffold
@@ -143,6 +144,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent { WearApp() }
     }
+}
+
+@Preview(device = "id:wearos_large_round", showSystemUi = true)
+@Composable
+fun WearAppPreview() {
+    WearApp()
 }
 
 @Composable

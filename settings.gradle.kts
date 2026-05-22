@@ -1,6 +1,3 @@
-System.setProperty("os.arch", "x86_64")
-System.setProperty("skiko.arch", "x64")
-
 pluginManagement {
     repositories {
         google {
@@ -22,7 +19,6 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven("https://maven.pkg.jetbrains.com/public")
     }
 }
 

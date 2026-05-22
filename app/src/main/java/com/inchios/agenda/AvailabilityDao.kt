@@ -1,5 +1,6 @@
 package com.inchios.agenda
 
+import com.inchios.agenda.android.Availability
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 

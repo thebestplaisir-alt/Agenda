@@ -1,6 +1,7 @@
 package com.inchios.agenda
 
 import android.content.Context
+import com.inchios.agenda.android.Availability
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase

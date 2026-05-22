@@ -1,5 +1,6 @@
 package com.inchios.agenda
 
+import com.inchios.agenda.android.Availability
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Filter
