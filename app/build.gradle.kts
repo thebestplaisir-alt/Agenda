@@ -32,7 +32,12 @@ android {
             }
 
             val sFile = properties.getProperty("RELEASE_STORE_FILE") ?: System.getenv("RELEASE_STORE_FILE")
-            storeFile = sFile?.let { file(it) }
+            storeFile = sFile?.let { 
+                // Si la propriété contient un nom de variable (ex: CM_KEYSTORE_PATH), on récupère sa valeur
+                val actualPath = System.getenv(it) ?: it
+                val possibleFile = file(actualPath)
+                if (possibleFile.exists()) possibleFile else rootProject.file(actualPath)
+            }
             storePassword = properties.getProperty("RELEASE_STORE_PASSWORD") ?: System.getenv("RELEASE_STORE_PASSWORD")
             keyAlias = properties.getProperty("RELEASE_KEY_ALIAS") ?: System.getenv("RELEASE_KEY_ALIAS")
             keyPassword = properties.getProperty("RELEASE_KEY_PASSWORD") ?: System.getenv("RELEASE_KEY_PASSWORD")
