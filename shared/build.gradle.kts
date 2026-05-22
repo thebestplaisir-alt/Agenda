@@ -31,9 +31,9 @@ kotlin {
             baseName = "shared"
             isStatic = true
         }
-        pod("FirebaseCore")
-        pod("FirebaseAuth")
-        pod("FirebaseFirestore")
+        pod("FirebaseCore") { version = "~> 11.4.0" }
+        pod("FirebaseAuth") { version = "~> 11.4.0" }
+        pod("FirebaseFirestore") { version = "~> 11.4.0" }
     }
 
     sourceSets {
