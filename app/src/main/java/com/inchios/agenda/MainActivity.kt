@@ -646,10 +646,19 @@ fun MainCalendarScreen(
         topBar = {
             TopAppBar(
                 title = { 
-                    Column {
-                        Text(stringResource(R.string.agenda_padel), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    Column(modifier = Modifier.padding(top = 8.dp)) { 
+                        Text(
+                            text = stringResource(R.string.agenda_padel), 
+                            style = MaterialTheme.typography.titleSmall, 
+                            fontWeight = FontWeight.Black,
+                            maxLines = 1
+                        )
                         if (currentUser != null) {
-                            Text(stringResource(R.string.matches_session, allAvailabilities.size), style = MaterialTheme.typography.labelSmall, color = Color.White.copy(alpha = 0.7f))
+                            Text(
+                                text = stringResource(R.string.matches_session, allAvailabilities.size), 
+                                style = MaterialTheme.typography.labelSmall, 
+                                color = Color.White.copy(alpha = 0.7f)
+                            )
                         }
                     }
                 },

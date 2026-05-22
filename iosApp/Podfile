@@ -3,6 +3,13 @@ use_modular_headers!
 target 'iosApp' do
   use_frameworks! :linkage => :static
   platform :ios, '16.0'
+
+  # Dépendances Firebase pour iOS
+  pod 'FirebaseCore'
+  pod 'FirebaseAuth'
+  pod 'FirebaseFirestore'
+
+  # Framework partagé Kotlin
   pod 'shared', :path => '../shared'
 
   post_install do |installer|
