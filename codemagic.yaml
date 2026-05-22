@@ -5,7 +5,7 @@ workflows:
     instance_type: mac_mini_m1
     environment:
       groups:
-        - google_play # On l'utilisera plus tard pour les clés de signature
+        - google_play
       vars:
         PACKAGE_NAME: "com.inchios.agendapadel"
       java: 17
@@ -22,7 +22,48 @@ workflows:
     publishing:
       email:
         recipients:
-          - inchiostro.stephane@hotmail.be # Change ceci par ton email
+          - inchiostro.stephane@hotmail.be
+        notify:
+          success: true
+          failure: true
+
+  ios-workflow:
+    name: Agenda iOS Workflow
+    max_build_duration: 60
+    instance_type: mac_mini_m1
+    environment:
+      groups:
+        - google_play # Réutilise le groupe pour les certificats iOS plus tard
+      vars:
+        XCODE_WORKSPACE: "iosApp/iosApp.xcworkspace"
+        XCODE_SCHEME: "iosApp"
+      java: 17
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Generate Xcode Project
+        script: |
+          cd iosApp
+          xcodegen generate
+      - name: Install CocoaPods
+        script: |
+          cd iosApp
+          pod install
+      - name: Build iOS App
+        script: |
+          xcodebuild build \
+            -workspace "$XCODE_WORKSPACE" \
+            -scheme "$XCODE_SCHEME" \
+            -configuration Release \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+    artifacts:
+      - iosApp/build/ios/ipa/*.ipa # Ajusté selon les besoins réels
+    publishing:
+      email:
+        recipients:
+          - inchiostro.stephane@hotmail.be
         notify:
           success: true
           failure: true

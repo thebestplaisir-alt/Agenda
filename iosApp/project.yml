@@ -1,0 +1,19 @@
+name: iosApp
+options:
+  bundleIdPrefix: com.inchios
+targets:
+  iosApp:
+    type: application
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources: [iosApp]
+    settings:
+      base:
+        INFOPLIST_FILE: iosApp/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: com.inchios.agenda.ios
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        LD_RUNPATH_SEARCH_PATHS: $(inherited) @executable_path/Frameworks
+        SWIFT_VERSION: 5.0
+    dependencies:
+      - framework: ../shared/build/cocoapods/framework/shared.framework
+        embed: true
