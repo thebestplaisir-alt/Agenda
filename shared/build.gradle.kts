@@ -30,15 +30,13 @@ kotlin {
         framework {
             baseName = "shared"
             isStatic = true
+            // Flag crucial pour la compatibilité Firebase / Objective-C
+            linkerOpts("-objc")
         }
         
-        // On force l'utilisation des modules pour une meilleure compatibilité
-        pod("FirebaseCore") { version = "~> 11.4.0" }
-        pod("FirebaseAuth") { version = "~> 11.4.0" }
-        pod("FirebaseFirestore") { version = "~> 11.4.0" }
-        
-        // Ajout de flags pour aider cinterop à trouver les headers de Firebase
-        extraSpecAttributes["pod_target_xcconfig"] = "{ 'HEADER_SEARCH_PATHS' => '$(inherited) ${'$'}PODS_ROOT/Firebase/Core/Sources' }"
+        pod("FirebaseCore") { version = "11.4.0" }
+        pod("FirebaseAuth") { version = "11.4.0" }
+        pod("FirebaseFirestore") { version = "11.4.0" }
     }
 
     sourceSets {

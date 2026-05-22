@@ -48,7 +48,7 @@ workflows:
           xcodegen generate
       - name: Install CocoaPods
         script: |
-          ./gradlew :shared:generateDummyFramework
+          ./gradlew :shared:generateDummyFramework --info
           cd iosApp
           pod install
       - name: Build iOS App
