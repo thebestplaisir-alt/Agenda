@@ -18,6 +18,10 @@ kotlin {
         }
     }
 
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
     cocoapods {
         summary = "Shared module for Agenda"
         homepage = "https://github.com/inchios/agenda"
@@ -27,14 +31,16 @@ kotlin {
             baseName = "shared"
             isStatic = true
         }
-        pod("FirebaseCore")
-        pod("FirebaseAuth")
-        pod("FirebaseFirestore")
+        pod("FirebaseCore") {
+            extraOpts += listOf("-compiler-option", "-fmodules")
+        }
+        pod("FirebaseAuth") {
+            extraOpts += listOf("-compiler-option", "-fmodules")
+        }
+        pod("FirebaseFirestore") {
+            extraOpts += listOf("-compiler-option", "-fmodules")
+        }
     }
-
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
 
     sourceSets {
         commonMain.dependencies {
