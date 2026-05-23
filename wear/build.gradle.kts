@@ -13,8 +13,8 @@ android {
         applicationId = "com.inchios.agendapadel" // MODIFIÉ : Identique au téléphone pour le Play Store
         minSdk = 30
         targetSdk = 35
-        versionCode = 10082 // MODIFIÉ : Doit être plus élevé que la version mobile (82)
-        versionName = "1.5.47"
+        versionCode = 10084 // MODIFIÉ : Doit être plus élevé que la version mobile (84)
+        versionName = "1.5.49"
     }
 
     buildTypes {

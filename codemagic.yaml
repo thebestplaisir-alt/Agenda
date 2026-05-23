@@ -41,29 +41,39 @@ workflows:
       xcode: 16.0
       cocoapods: default
     scripts:
-      - name: Force Java 17 Environment
+      - name: Force Java 17 System and Gradle
         script: |
+          # Trouver le chemin de Java 17 sur le Mac Codemagic
           JAVA_PATH=$(/usr/libexec/java_home -v 17)
           echo "JAVA_HOME=$JAVA_PATH" >> $CM_ENV
           echo "PATH=$JAVA_PATH/bin:$PATH" >> $CM_ENV
-          # Forcer aussi pour les scripts Xcode
+          # Forcer Kotlin à utiliser ce Java spécifiquement pour le pont iOS
+          echo "kotlin.native.cocoapods.java.home=$JAVA_PATH" >> gradle.properties
           echo "org.gradle.java.home=$JAVA_PATH" >> gradle.properties
-      - name: Clean Environment
+      - name: Clean Build Artifacts
         script: |
           rm -rf ~/.konan
           rm -rf shared/build
+          rm -rf iosApp/Pods
+          rm -rf iosApp/iosApp.xcworkspace
       - name: Generate Xcode Project
         script: |
           brew install xcodegen
           cd iosApp
           xcodegen generate
-      - name: Install CocoaPods
+      - name: Install CocoaPods and Kotlin Framework
         script: |
+          export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+          # Générer le lien entre Kotlin et CocoaPods
           ./gradlew :shared:podspec :shared:generateDummyFramework --no-daemon
           cd iosApp
           pod install
       - name: Build iOS App
         script: |
+          export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+          export SDK_NAME="iphoneos"
+          export CONFIGURATION="Release"
+          export ARCHS="arm64"
           xcodebuild build \
             -workspace "$XCODE_WORKSPACE" \
             -scheme "$XCODE_SCHEME" \
