@@ -36,8 +36,9 @@ kotlin {
         pod("FirebaseAuth") { version = "11.4.0" }
         pod("FirebaseFirestore") { version = "11.4.0" }
         
-        // C'EST ICI QUE ÇA SE JOUE : On force Java 17 à l'intérieur de Xcode
+        // CORRECTIFS XCODE 15/16 : Sandboxing et compatibilité
         extraSpecAttributes["pod_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO' }"
+        extraSpecAttributes["user_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO' }"
     }
 
     sourceSets {
