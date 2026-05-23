@@ -6,7 +6,8 @@ targets:
     type: application
     platform: iOS
     deploymentTarget: "16.0"
-    sources: [iosApp]
+    sources: 
+      - iosApp
     settings:
       base:
         INFOPLIST_FILE: iosApp/Info.plist
@@ -15,11 +16,9 @@ targets:
         LD_RUNPATH_SEARCH_PATHS: $(inherited) @executable_path/Frameworks
         SWIFT_VERSION: 5.0
         ENABLE_USER_SCRIPT_SANDBOXING: NO
-        # On ajoute tous les chemins possibles pour être sûr
         FRAMEWORK_SEARCH_PATHS: 
           - $(inherited)
           - $(SRCROOT)/../shared/build/bin/iosArm64/releaseFramework
-          - $(SRCROOT)/../shared/build/cocoapods/framework
     dependencies:
       - framework: ../shared/build/bin/iosArm64/releaseFramework/shared.framework
         embed: true

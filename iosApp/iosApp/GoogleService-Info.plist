@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>159581392137-2p1uvtc4oi6md2hcadtnpdkpuag36g3j.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.159581392137-2p1uvtc4oi6md2hcadtnpdkpuag36g3j</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>159581392137-9iffmfabsnh315eocscgv9g8mh7ejsfj.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCJCXHfiBxbvzC_--tmOY4AyzV00D8y6Jw</string>
+	<key>GCM_SENDER_ID</key>
+	<string>159581392137</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.inchios.agenda.ios</string>
+	<key>PROJECT_ID</key>
+	<string>agenda-sport-c4e9e</string>
+	<key>STORAGE_BUCKET</key>
+	<string>agenda-sport-c4e9e.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:159581392137:ios:ff5c3e2094b88c8b83d7d8</string>
+</dict>
+</plist>
