@@ -18,9 +18,8 @@ kotlin {
     }
 
     // Cibles iOS simplifiées
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
+    // Définit Arm64, X64 et SimulatorArm64 en une ligne
+    ios()
 
     cocoapods {
         summary = "Shared module for Agenda"

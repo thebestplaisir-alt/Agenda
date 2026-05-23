@@ -41,11 +41,13 @@ workflows:
       xcode: 16.0
       cocoapods: default
     scripts:
-      - name: Setup Environment
+      - name: Force Java 17 Environment
         script: |
           JAVA_PATH=$(/usr/libexec/java_home -v 17)
           echo "JAVA_HOME=$JAVA_PATH" >> $CM_ENV
           echo "PATH=$JAVA_PATH/bin:$PATH" >> $CM_ENV
+          # Forcer aussi pour les scripts Xcode
+          echo "org.gradle.java.home=$JAVA_PATH" >> gradle.properties
       - name: Clean Environment
         script: |
           rm -rf ~/.konan
@@ -57,14 +59,11 @@ workflows:
           xcodegen generate
       - name: Install CocoaPods
         script: |
-          export JAVA_HOME=$(/usr/libexec/java_home -v 17)
-          # Générer le framework fictif pour débloquer CocoaPods
-          ./gradlew :shared:generateDummyFramework --no-daemon
+          ./gradlew :shared:podspec :shared:generateDummyFramework --no-daemon
           cd iosApp
           pod install
       - name: Build iOS App
         script: |
-          export JAVA_HOME=$(/usr/libexec/java_home -v 17)
           xcodebuild build \
             -workspace "$XCODE_WORKSPACE" \
             -scheme "$XCODE_SCHEME" \
