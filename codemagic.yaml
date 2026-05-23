@@ -67,10 +67,11 @@ workflows:
           export JAVA_HOME=$(/usr/libexec/java_home -v 17)
           export PATH=$JAVA_HOME/bin:$PATH
           
-          # Générer le podspec
-          ./gradlew :shared:podspec --no-daemon
+          # Générer le podspec ET le dummy framework pour satisfaire CocoaPods
+          ./gradlew :shared:podspec :shared:generateDummyFramework --no-daemon
           
-          # Injection plus flexible (supporte set -e et set -ev)
+          # Injection de Java dans le script de build que Xcode appellera
+          # On cible 'set -e' car c'est le début standard du script généré
           sed -i '' "s|set -e|set -e\\nexport JAVA_HOME=$JAVA_HOME\\nexport PATH=\$JAVA_HOME/bin:\$PATH\\nexport GRADLE_OPTS='-Xmx6144m'|g" shared/shared.podspec
 
           cd iosApp
