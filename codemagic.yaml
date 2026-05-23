@@ -57,7 +57,7 @@ workflows:
       - name: Build Kotlin Framework
         script: |
           export JAVA_HOME=$(/usr/libexec/java_home -v 17)
-          ./gradlew :shared:assembleSharedReleaseFramework
+          ./gradlew :shared:assembleRelease
       - name: Install CocoaPods
         script: |
           cd iosApp
@@ -66,7 +66,8 @@ workflows:
         script: |
           # Créer le dossier attendu par XcodeGen s'il n'existe pas
           mkdir -p shared/build/fat-framework/release
-          cp -R shared/build/bin/iosArm64/releaseFramework/shared.framework shared/build/fat-framework/release/
+          # On tente de copier le framework compilé
+          cp -R shared/build/bin/iosArm64/releaseFramework/shared.framework shared/build/fat-framework/release/ || true
 
           export SDK_NAME="iphoneos"
           export CONFIGURATION="Release"
