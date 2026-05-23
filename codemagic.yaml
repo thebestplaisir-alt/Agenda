@@ -33,37 +33,39 @@ workflows:
     instance_type: mac_mini_m1
     environment:
       groups:
-        - google_play # Réutilise le groupe pour les certificats iOS plus tard
+        - google_play
       vars:
         XCODE_WORKSPACE: "iosApp/iosApp.xcworkspace"
         XCODE_SCHEME: "iosApp"
       java: 17
-      xcode: latest
+      xcode: 15.4
       cocoapods: default
     scripts:
-      - name: Set Java 17 environment
+      - name: Setup Environment
         script: |
+          # Force Java 17
           echo "export JAVA_HOME=$(/usr/libexec/java_home -v 17)" >> $CM_ENV
-          echo "export PATH=$JAVA_HOME/bin:$PATH" >> $CM_ENV
-      - name: Clean Kotlin Native cache
+          echo "export PATH=$(/usr/libexec/java_home -v 17)/bin:$PATH" >> $CM_ENV
+      - name: Clean and Install Tools
         script: |
           rm -rf ~/.konan
+          brew install xcodegen
       - name: Generate Xcode Project
         script: |
-          brew install xcodegen
           cd iosApp
           xcodegen generate
       - name: Install CocoaPods
         script: |
+          export JAVA_HOME=$(/usr/libexec/java_home -v 17)
           ./gradlew :shared:generateDummyFramework --info
           cd iosApp
           pod install
       - name: Build iOS App
         script: |
+          export JAVA_HOME=$(/usr/libexec/java_home -v 17)
           export SDK_NAME="iphoneos"
           export CONFIGURATION="Release"
           export ARCHS="arm64"
-          export GRADLE_OPTS="-Dorg.gradle.jvmargs='-Xmx4096m -XX:MaxMetaspaceSize=1024m'"
           xcodebuild build \
             -workspace "$XCODE_WORKSPACE" \
             -scheme "$XCODE_SCHEME" \
@@ -72,7 +74,7 @@ workflows:
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO
     artifacts:
-      - iosApp/build/ios/ipa/*.ipa # Ajusté selon les besoins réels
+      - iosApp/build/ios/ipa/*.ipa
     publishing:
       email:
         recipients:
