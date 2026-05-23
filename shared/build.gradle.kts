@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.cocoapods)
     id("com.android.library")
 }
 
@@ -16,15 +17,22 @@ kotlin {
         }
     }
 
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
+    cocoapods {
+        summary = "Shared module for Agenda"
+        homepage = "https://github.com/inchios/agenda"
+        version = "1.0"
+        ios.deploymentTarget = "16.0"
+        framework {
             baseName = "shared"
             isStatic = true
         }
+        pod("FirebaseCore") { version = "11.4.0" }
+        pod("FirebaseAuth") { version = "11.4.0" }
+        pod("FirebaseFirestore") { version = "11.4.0" }
     }
 
     sourceSets {
