@@ -41,6 +41,9 @@ workflows:
       xcode: latest
       cocoapods: default
     scripts:
+      - name: Clean Kotlin Native cache
+        script: |
+          rm -rf ~/.konan
       - name: Generate Xcode Project
         script: |
           brew install xcodegen

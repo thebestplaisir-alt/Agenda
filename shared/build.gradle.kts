@@ -30,9 +30,9 @@ kotlin {
         framework {
             baseName = "shared"
             isStatic = true
-            linkerOpts("-objc")
         }
         
+        // Configuration simplifiée pour Firebase
         pod("FirebaseCore")
         pod("FirebaseAuth")
         pod("FirebaseFirestore")
