@@ -5,8 +5,8 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.kotlin.cocoapods)
     id("com.android.library")
+    kotlin("native.cocoapods")
 }
 
 kotlin {
@@ -17,6 +17,7 @@ kotlin {
         }
     }
 
+    // Configuration des cibles iOS
     iosX64()
     iosArm64()
     iosSimulatorArm64()
@@ -28,11 +29,14 @@ kotlin {
         ios.deploymentTarget = "16.0"
         framework {
             baseName = "shared"
-            isStatic = true // Repasse en statique pour stabilité Xcode 16
+            isStatic = true
         }
         pod("FirebaseCore") { version = "11.4.0" }
         pod("FirebaseAuth") { version = "11.4.0" }
         pod("FirebaseFirestore") { version = "11.4.0" }
+        
+        // C'EST ICI QUE ÇA SE JOUE : On force Java 17 à l'intérieur de Xcode
+        specAttributes["pod_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO' }"
     }
 
     sourceSets {
@@ -44,7 +48,6 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-
             implementation(libs.firebase.kotlin.auth)
             implementation(libs.firebase.kotlin.firestore)
             implementation(libs.kotlinx.datetime)
