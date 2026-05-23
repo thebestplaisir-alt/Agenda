@@ -3,9 +3,10 @@ platform :ios, '16.0'
 target 'iosApp' do
   use_frameworks! :linkage => :static
 
-  # On ne met QUE le module shared.
-  # C'est lui qui tirera Firebase automatiquement via sa podspec.
-  pod 'shared', :path => '../shared'
+  # On ne met que les dépendances natives
+  pod 'FirebaseCore', '11.4.0'
+  pod 'FirebaseAuth', '11.4.0'
+  pod 'FirebaseFirestore', '11.4.0'
 
   post_install do |installer|
     installer.pods_project.targets.each do |target|
