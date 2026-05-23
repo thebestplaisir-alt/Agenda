@@ -1,12 +1,11 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.cocoapods)
     id("com.android.library")
 }
 
@@ -18,29 +17,22 @@ kotlin {
         }
     }
 
-    // Crée un XCFramework nommé "shared"
-    val xcf = XCFramework("shared")
-    
-    iosX64 {
-        binaries.framework {
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
+    cocoapods {
+        summary = "Shared module for Agenda"
+        homepage = "https://github.com/inchios/agenda"
+        version = "1.0"
+        ios.deploymentTarget = "16.0"
+        framework {
             baseName = "shared"
             isStatic = true
-            xcf.add(this)
         }
-    }
-    iosArm64 {
-        binaries.framework {
-            baseName = "shared"
-            isStatic = true
-            xcf.add(this)
-        }
-    }
-    iosSimulatorArm64 {
-        binaries.framework {
-            baseName = "shared"
-            isStatic = true
-            xcf.add(this)
-        }
+        pod("FirebaseCore") { version = "11.4.0" }
+        pod("FirebaseAuth") { version = "11.4.0" }
+        pod("FirebaseFirestore") { version = "11.4.0" }
     }
 
     sourceSets {
@@ -62,8 +54,6 @@ kotlin {
         androidMain.dependencies {
             implementation("androidx.compose.ui:ui-tooling-preview:1.7.8")
             implementation(libs.androidx.activity.compose)
-        }
-        iosMain.dependencies {
         }
     }
 }
