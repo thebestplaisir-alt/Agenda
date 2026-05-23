@@ -17,6 +17,7 @@ kotlin {
         }
     }
 
+    // Cibles iOS simplifiées
     iosX64()
     iosArm64()
     iosSimulatorArm64()
@@ -30,6 +31,8 @@ kotlin {
             baseName = "shared"
             isStatic = true
         }
+        
+        // Firebase pour iOS
         pod("FirebaseCore") { version = "11.4.0" }
         pod("FirebaseAuth") { version = "11.4.0" }
         pod("FirebaseFirestore") { version = "11.4.0" }
@@ -45,7 +48,7 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
 
-            // Firebase Multiplatform
+            // Firebase Multiplatform (GitLive)
             implementation(libs.firebase.kotlin.auth)
             implementation(libs.firebase.kotlin.firestore)
 
