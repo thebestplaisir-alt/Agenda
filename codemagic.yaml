@@ -55,6 +55,11 @@ workflows:
           ./gradlew clean --no-daemon
           rm -rf ~/.konan
           rm -rf shared/build
+      - name: Generate Xcode Project
+        script: |
+          brew install xcodegen
+          cd iosApp
+          xcodegen generate
       - name: Install CocoaPods
         script: |
           export JAVA_HOME=$(/usr/libexec/java_home -v 17)
