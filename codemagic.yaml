@@ -45,17 +45,19 @@ workflows:
         script: |
           echo "export JAVA_HOME=$(/usr/libexec/java_home -v 17)" >> $CM_ENV
           echo "export PATH=$(/usr/libexec/java_home -v 17)/bin:$PATH" >> $CM_ENV
-      - name: Build Kotlin XCFramework
+      - name: Clean and Install Tools
         script: |
-          export JAVA_HOME=$(/usr/libexec/java_home -v 17)
-          ./gradlew :shared:assembleSharedReleaseXCFramework
+          rm -rf ~/.konan
+          brew install xcodegen
       - name: Generate Xcode Project
         script: |
-          brew install xcodegen
           cd iosApp
           xcodegen generate
       - name: Install CocoaPods
         script: |
+          export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+          # Génère le framework de base pour que CocoaPods soit content
+          ./gradlew :shared:generateDummyFramework
           cd iosApp
           pod install
       - name: Build iOS App
