@@ -1128,6 +1128,25 @@ fun ProfileDialog(profile: UserProfile, groupMembers: List<UserProfile>, groups:
                 }
                 item {
                     Column(modifier = Modifier.fillMaxWidth().padding(top = 16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        // Bouton : Installer sur la montre
+                        TextButton(
+                            onClick = {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.inchios.agendapadel"))
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                try {
+                                    context.startActivity(intent)
+                                } catch (e: Exception) {
+                                    context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.inchios.agendapadel")))
+                                }
+                            },
+                            colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.secondary),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Icon(Icons.Default.Watch, contentDescription = null)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(stringResource(R.string.install_on_watch))
+                        }
+
                         TextButton(onClick = onLogout, colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.secondary), modifier = Modifier.fillMaxWidth()) { Icon(Icons.AutoMirrored.Filled.Logout, contentDescription = null); Spacer(modifier = Modifier.width(8.dp)); Text(stringResource(R.string.logout)) }
                         
                         // Suppression locale (Firebase + Data)

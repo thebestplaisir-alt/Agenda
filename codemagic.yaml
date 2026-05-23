@@ -48,8 +48,15 @@ workflows:
           echo "PATH=$JAVA_PATH/bin:$PATH" >> $CM_ENV
       - name: Clean Environment
         script: |
+          chmod +x gradlew
+          ./gradlew clean --no-daemon
           rm -rf ~/.konan
           rm -rf shared/build
+      - name: Build Kotlin Framework (iOS)
+        script: |
+          export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+          export PATH=$JAVA_HOME/bin:$PATH
+          ./gradlew :shared:assembleRelease --no-daemon -Pkotlin.native.ignoreDisabledTargets=true
       - name: Generate Xcode Project
         script: |
           brew install xcodegen
@@ -57,23 +64,14 @@ workflows:
           xcodegen generate
       - name: Install CocoaPods
         script: |
-          chmod +x gradlew
           export JAVA_HOME=$(/usr/libexec/java_home -v 17)
           export PATH=$JAVA_HOME/bin:$PATH
           
-          # Vérifier Java
-          java -version
+          # Générer le podspec
+          ./gradlew :shared:podspec --no-daemon
           
-          # Générer le podspec standard
-          ./gradlew :shared:podspec :shared:generateDummyFramework --no-daemon
-          
-          # TRÈS IMPORTANT : Injecter Java 17 dans le podspec généré de manière robuste
-          # On ajoute aussi le PATH et on augmente la mémoire pour ce script précis
-          SED_REPLACEMENT="set -ev\\nexport JAVA_HOME=$JAVA_HOME\\nexport PATH=\$JAVA_HOME/bin:\$PATH\\nexport GRADLE_OPTS='-Xmx6144m'"
-          sed -i '' "s|set -ev|$SED_REPLACEMENT|g" shared/shared.podspec
-          
-          # Debug : voir si l'injection a réussi
-          grep -A 5 "set -ev" shared/shared.podspec
+          # Injection plus flexible (supporte set -e et set -ev)
+          sed -i '' "s|set -e|set -e\\nexport JAVA_HOME=$JAVA_HOME\\nexport PATH=\$JAVA_HOME/bin:\$PATH\\nexport GRADLE_OPTS='-Xmx6144m'|g" shared/shared.podspec
 
           cd iosApp
           pod install
