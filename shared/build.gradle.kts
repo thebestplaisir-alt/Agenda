@@ -17,7 +17,6 @@ kotlin {
         }
     }
 
-    // Utilisation des cibles standard
     iosX64()
     iosArm64()
     iosSimulatorArm64()
@@ -29,10 +28,8 @@ kotlin {
         ios.deploymentTarget = "16.0"
         framework {
             baseName = "shared"
-            isStatic = false // Passer en dynamique pour Firebase 11
+            isStatic = true // Repasse en statique pour stabilité Xcode 16
         }
-        
-        // Versions compatibles Xcode 16
         pod("FirebaseCore") { version = "11.4.0" }
         pod("FirebaseAuth") { version = "11.4.0" }
         pod("FirebaseFirestore") { version = "11.4.0" }
