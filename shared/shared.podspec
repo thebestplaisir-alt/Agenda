@@ -31,7 +31,6 @@ Pod::Spec.new do |spec|
     spec.pod_target_xcconfig = {
         'KOTLIN_PROJECT_PATH' => ':shared',
         'PRODUCT_MODULE_NAME' => 'shared',
-        'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO',
     }
                 
     spec.script_phases = [
@@ -45,7 +44,6 @@ Pod::Spec.new do |spec|
                   exit 0
                 fi
                 set -ev
-                export JAVA_HOME=$(/usr/libexec/java_home -v 17)
                 REPO_ROOT="$PODS_TARGET_SRCROOT"
                 "$REPO_ROOT/../gradlew" -p "$REPO_ROOT" $KOTLIN_PROJECT_PATH:syncFramework \
                     -Pkotlin.native.cocoapods.platform=$PLATFORM_NAME \

@@ -14,3 +14,13 @@ targets:
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         LD_RUNPATH_SEARCH_PATHS: $(inherited) @executable_path/Frameworks
         SWIFT_VERSION: 5.0
+        ENABLE_USER_SCRIPT_SANDBOXING: NO
+    preBuildScripts:
+      - name: Build Kotlin Framework
+        script: |
+          cd "$SRCROOT/.."
+          export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+          ./gradlew :shared:embedAndSignAppleFrameworkForXcode
+    dependencies:
+      - framework: ../shared/build/xcode-frameworks/shared.framework
+        embed: true

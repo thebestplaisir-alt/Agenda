@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.kotlin.compose)
     id("com.android.library")
-    kotlin("native.cocoapods")
 }
 
 kotlin {
@@ -18,24 +17,15 @@ kotlin {
         }
     }
 
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
-
-    cocoapods {
-        summary = "Shared module for Agenda"
-        homepage = "https://github.com/inchios/agenda"
-        version = "1.0"
-        ios.deploymentTarget = "16.0"
-        framework {
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
             baseName = "shared"
             isStatic = true
         }
-        
-        // Configuration simplifiée pour Firebase
-        pod("FirebaseCore")
-        pod("FirebaseAuth")
-        pod("FirebaseFirestore")
     }
 
     sourceSets {
