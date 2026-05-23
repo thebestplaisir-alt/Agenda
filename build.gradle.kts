@@ -1,8 +1,10 @@
+/*
 // FORCE LES PROPRIÉTÉS POUR TOUS LES PLUGINS AVANT TOUT LE RESTE
 System.setProperty("os.detected.arch", "x86_64")
 System.setProperty("os.detected.name", "osx")
 System.setProperty("os.detected.classifier", "osx-x86_64")
 System.setProperty("os.arch", "x86_64")
+*/
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
