@@ -41,32 +41,37 @@ workflows:
       xcode: 16.0
       cocoapods: default
     scripts:
-      - name: Force Java 17 System-wide
+      - name: Setup Environment
         script: |
-          # Utiliser la version Java 17 pré-installée sur Codemagic
           JAVA_PATH=$(/usr/libexec/java_home -v 17)
           echo "JAVA_HOME=$JAVA_PATH" >> $CM_ENV
           echo "PATH=$JAVA_PATH/bin:$PATH" >> $CM_ENV
-          export JAVA_HOME=$JAVA_PATH
-          export PATH=$JAVA_HOME/bin:$PATH
-          java -version
-      - name: Clean Kotlin Native cache
+      - name: Clean and Generate Podspec
         script: |
           rm -rf ~/.konan
+          export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+          ./gradlew :shared:podspec --no-daemon
       - name: Generate Xcode Project
         script: |
           brew install xcodegen
           cd iosApp
           xcodegen generate
-      - name: Install CocoaPods
+      - name: Pre-build Kotlin Framework (The Truth Step)
         script: |
           export JAVA_HOME=$(/usr/libexec/java_home -v 17)
-          # Générer le fichier podspec et le framework
-          ./gradlew :shared:podspec :shared:generateDummyFramework --no-daemon
+          # On compile le VRAI code ici pour voir l'erreur exacte si ça échoue
+          ./gradlew :shared:syncFramework \
+            -Pkotlin.native.cocoapods.platform=iphoneos \
+            -Pkotlin.native.cocoapods.archs=arm64 \
+            -Pkotlin.native.cocoapods.configuration=Release \
+            --no-daemon --stacktrace
+      - name: Install CocoaPods
+        script: |
           cd iosApp
           pod install
       - name: Build iOS App
         script: |
+          export JAVA_HOME=$(/usr/libexec/java_home -v 17)
           xcodebuild build \
             -workspace "$XCODE_WORKSPACE" \
             -scheme "$XCODE_SCHEME" \
