@@ -38,7 +38,7 @@ workflows:
         XCODE_WORKSPACE: "iosApp/iosApp.xcworkspace"
         XCODE_SCHEME: "iosApp"
       java: 17
-      xcode: 15.2
+      xcode: 16.0
       cocoapods: default
     scripts:
       - name: Setup Environment
