@@ -30,13 +30,12 @@ kotlin {
         framework {
             baseName = "shared"
             isStatic = true
-            // Flag crucial pour la compatibilité Firebase / Objective-C
             linkerOpts("-objc")
         }
         
-        pod("FirebaseCore") { version = "11.4.0" }
-        pod("FirebaseAuth") { version = "11.4.0" }
-        pod("FirebaseFirestore") { version = "11.4.0" }
+        pod("FirebaseCore")
+        pod("FirebaseAuth")
+        pod("FirebaseFirestore")
     }
 
     sourceSets {
