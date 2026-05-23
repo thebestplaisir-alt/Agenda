@@ -16,8 +16,8 @@ android {
         applicationId = "com.inchios.agendapadel"
         minSdk = 26
         targetSdk = 35
-        versionCode = 89
-        versionName = "1.5.54"
+        versionCode = 90
+        versionName = "1.5.55"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
