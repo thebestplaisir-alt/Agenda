@@ -54,13 +54,20 @@ workflows:
         script: |
           cd iosApp
           xcodegen generate
+      - name: Build Kotlin Framework
+        script: |
+          export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+          ./gradlew :shared:assembleSharedReleaseFramework
       - name: Install CocoaPods
         script: |
           cd iosApp
           pod install
       - name: Build iOS App
         script: |
-          export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+          # Créer le dossier attendu par XcodeGen s'il n'existe pas
+          mkdir -p shared/build/fat-framework/release
+          cp -R shared/build/bin/iosArm64/releaseFramework/shared.framework shared/build/fat-framework/release/
+
           export SDK_NAME="iphoneos"
           export CONFIGURATION="Release"
           export ARCHS="arm64"
