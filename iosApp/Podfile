@@ -7,7 +7,17 @@ target 'iosApp' do
   pod 'shared', :path => '../shared'
 
   post_install do |installer|
+    # Récupération du chemin Java 17 sur macOS
+    java_path = `/usr/libexec/java_home -v 17`.strip
+
     installer.pods_project.targets.each do |target|
+      # Injection forcée de Java dans les scripts de build de Gradle
+      target.build_phases.each do |phase|
+        if phase.respond_to?(:shell_script) && phase.shell_script.include?('gradlew')
+          phase.shell_script = "export JAVA_HOME=#{java_path}\nexport PATH=$JAVA_HOME/bin:$PATH\nexport GRADLE_OPTS='-Xmx6144m'\n" + phase.shell_script
+        end
+      end
+
       target.build_configurations.each do |config|
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
         config.build_settings['ENABLE_USER_SCRIPT_SANDBOXING'] = 'NO'
