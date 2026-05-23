@@ -15,7 +15,7 @@ workflows:
           echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
       - name: Build Android App Bundle (Phone & Wear)
         script: |
-          ./gradlew :app:bundleRelease :wear:bundleRelease
+          ./gradlew :app:bundleRelease :wear:bundleRelease --no-daemon
     artifacts:
       - app/build/outputs/bundle/release/*.aab
       - wear/build/outputs/bundle/release/*.aab
@@ -45,19 +45,20 @@ workflows:
         script: |
           echo "export JAVA_HOME=$(/usr/libexec/java_home -v 17)" >> $CM_ENV
           echo "export PATH=$(/usr/libexec/java_home -v 17)/bin:$PATH" >> $CM_ENV
-      - name: Clean and Install Tools
+      - name: Clean and Generate Podspec
         script: |
           rm -rf ~/.konan
-          brew install xcodegen
+          export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+          ./gradlew :shared:podspec --no-daemon
       - name: Generate Xcode Project
         script: |
+          brew install xcodegen
           cd iosApp
           xcodegen generate
       - name: Install CocoaPods
         script: |
           export JAVA_HOME=$(/usr/libexec/java_home -v 17)
-          # Génère le framework de base pour que CocoaPods soit content
-          ./gradlew :shared:generateDummyFramework
+          ./gradlew :shared:generateDummyFramework --no-daemon
           cd iosApp
           pod install
       - name: Build iOS App
