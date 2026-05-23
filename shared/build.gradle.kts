@@ -32,10 +32,10 @@ kotlin {
             isStatic = true
         }
         
-        // Versions ultra-stables pour KMP
-        pod("FirebaseCore") { version = "10.25.0" }
-        pod("FirebaseAuth") { version = "10.25.0" }
-        pod("FirebaseFirestore") { version = "10.25.0" }
+        // Versions compatibles Xcode 16
+        pod("FirebaseCore") { version = "11.4.0" }
+        pod("FirebaseAuth") { version = "11.4.0" }
+        pod("FirebaseFirestore") { version = "11.4.0" }
     }
 
     sourceSets {
@@ -61,7 +61,7 @@ kotlin {
 
 android {
     namespace = "com.inchios.agenda.shared"
-    compileSdk = 34 // Rétrogradation pour stabilité avec AGP 8.5.2
+    compileSdk = 34
     defaultConfig {
         minSdk = 26
     }
