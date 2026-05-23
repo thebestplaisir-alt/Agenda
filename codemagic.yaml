@@ -60,8 +60,9 @@ workflows:
           xcodegen generate
       - name: Install CocoaPods
         script: |
-          # Générer le dummy framework pour débloquer pod install
-          ./gradlew :shared:generateDummyFramework --no-daemon
+          export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+          # Générer le fichier podspec et le framework
+          ./gradlew :shared:podspec :shared:generateDummyFramework --no-daemon
           cd iosApp
           pod install
       - name: Build iOS App
