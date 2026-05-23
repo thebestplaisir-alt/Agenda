@@ -15,8 +15,11 @@ targets:
         LD_RUNPATH_SEARCH_PATHS: $(inherited) @executable_path/Frameworks
         SWIFT_VERSION: 5.0
         ENABLE_USER_SCRIPT_SANDBOXING: NO
-        # Ajout du chemin de recherche pour le framework Kotlin
-        FRAMEWORK_SEARCH_PATHS: $(inherited) $(SRCROOT)/../shared/build/bin/iosArm64/releaseFramework
+        # On ajoute tous les chemins possibles pour être sûr
+        FRAMEWORK_SEARCH_PATHS: 
+          - $(inherited)
+          - $(SRCROOT)/../shared/build/bin/iosArm64/releaseFramework
+          - $(SRCROOT)/../shared/build/cocoapods/framework
     dependencies:
       - framework: ../shared/build/bin/iosArm64/releaseFramework/shared.framework
         embed: true
