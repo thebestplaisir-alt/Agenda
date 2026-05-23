@@ -19,12 +19,9 @@ kotlin {
     }
 
     // Configuration des cibles iOS
-    listOf(iosX64(), iosArm64(), iosSimulatorArm64()).forEach {
-        it.binaries.framework {
-            baseName = "shared"
-            isStatic = true
-        }
-    }
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
 
     cocoapods {
         summary = "Shared module for Agenda"

@@ -46,34 +46,23 @@ workflows:
           JAVA_PATH=$(/usr/libexec/java_home -v 17)
           echo "JAVA_HOME=$JAVA_PATH" >> $CM_ENV
           echo "PATH=$JAVA_PATH/bin:$PATH" >> $CM_ENV
+          # Force le lien symbolique global pour Xcode
+          sudo ln -sf $JAVA_PATH/bin/java /usr/local/bin/java
+          java -version
       - name: Clean Environment
         script: |
           chmod +x gradlew
           ./gradlew clean --no-daemon
           rm -rf ~/.konan
           rm -rf shared/build
-      - name: Build Kotlin Framework (iOS)
-        script: |
-          export JAVA_HOME=$(/usr/libexec/java_home -v 17)
-          export PATH=$JAVA_HOME/bin:$PATH
-          ./gradlew :shared:assembleRelease --no-daemon -Pkotlin.native.ignoreDisabledTargets=true
-      - name: Generate Xcode Project
-        script: |
-          brew install xcodegen
-          cd iosApp
-          xcodegen generate
       - name: Install CocoaPods
         script: |
           export JAVA_HOME=$(/usr/libexec/java_home -v 17)
           export PATH=$JAVA_HOME/bin:$PATH
           
-          # Générer le podspec ET le dummy framework pour satisfaire CocoaPods
+          # Générer le podspec ET le dummy framework
           ./gradlew :shared:podspec :shared:generateDummyFramework --no-daemon
           
-          # Injection de Java dans le script de build que Xcode appellera
-          # On cible 'set -e' car c'est le début standard du script généré
-          sed -i '' "s|set -e|set -e\\nexport JAVA_HOME=$JAVA_HOME\\nexport PATH=\$JAVA_HOME/bin:\$PATH\\nexport GRADLE_OPTS='-Xmx6144m'|g" shared/shared.podspec
-
           cd iosApp
           pod install
       - name: Build iOS App
