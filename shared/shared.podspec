@@ -31,6 +31,7 @@ Pod::Spec.new do |spec|
     spec.pod_target_xcconfig = {
         'KOTLIN_PROJECT_PATH' => ':shared',
         'PRODUCT_MODULE_NAME' => 'shared',
+        'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO',
     }
                 
     spec.script_phases = [
