@@ -17,6 +17,7 @@ kotlin {
         }
     }
 
+    // Utilisation des cibles standard
     iosX64()
     iosArm64()
     iosSimulatorArm64()
@@ -30,9 +31,11 @@ kotlin {
             baseName = "shared"
             isStatic = true
         }
-        pod("FirebaseCore") { version = "11.4.0" }
-        pod("FirebaseAuth") { version = "11.4.0" }
-        pod("FirebaseFirestore") { version = "11.4.0" }
+        
+        // Versions ultra-stables pour KMP
+        pod("FirebaseCore") { version = "10.25.0" }
+        pod("FirebaseAuth") { version = "10.25.0" }
+        pod("FirebaseFirestore") { version = "10.25.0" }
     }
 
     sourceSets {
@@ -45,10 +48,8 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
 
-            // Firebase Multiplatform (GitLive)
             implementation(libs.firebase.kotlin.auth)
             implementation(libs.firebase.kotlin.firestore)
-
             implementation(libs.kotlinx.datetime)
         }
         androidMain.dependencies {
@@ -60,7 +61,7 @@ kotlin {
 
 android {
     namespace = "com.inchios.agenda.shared"
-    compileSdk = 35
+    compileSdk = 34 // Rétrogradation pour stabilité avec AGP 8.5.2
     defaultConfig {
         minSdk = 26
     }

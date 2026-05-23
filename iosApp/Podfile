@@ -3,7 +3,11 @@ platform :ios, '16.0'
 target 'iosApp' do
   use_frameworks! :linkage => :static
 
-  # Le module shared tirera ses propres dépendances Firebase
+  # Aligné sur les versions du build.gradle.kts
+  pod 'FirebaseCore', '10.25.0'
+  pod 'FirebaseAuth', '10.25.0'
+  pod 'FirebaseFirestore', '10.25.0'
+
   pod 'shared', :path => '../shared'
 
   post_install do |installer|
