@@ -1,6 +1,7 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -17,14 +18,28 @@ kotlin {
         }
     }
 
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
+    // Crée un XCFramework nommé "shared"
+    val xcf = XCFramework("shared")
+    
+    iosX64 {
+        binaries.framework {
             baseName = "shared"
             isStatic = true
+            xcf.add(this)
+        }
+    }
+    iosArm64 {
+        binaries.framework {
+            baseName = "shared"
+            isStatic = true
+            xcf.add(this)
+        }
+    }
+    iosSimulatorArm64 {
+        binaries.framework {
+            baseName = "shared"
+            isStatic = true
+            xcf.add(this)
         }
     }
 
