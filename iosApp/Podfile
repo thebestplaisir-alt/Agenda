@@ -1,30 +1,18 @@
 platform :ios, '16.0'
 
 target 'iosApp' do
-  use_frameworks! :linkage => :static
+  use_frameworks! # Dynamique par défaut
 
   # Versions compatibles Xcode 16
-  pod 'FirebaseCore', '11.4.0'
-  pod 'FirebaseAuth', '11.4.0'
-  pod 'FirebaseFirestore', '11.4.0'
-
   pod 'shared', :path => '../shared'
 
   post_install do |installer|
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |config|
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
+        # DÉSACTIVE LE SANDBOXING TOTAL (Crucial pour Xcode 16)
         config.build_settings['ENABLE_USER_SCRIPT_SANDBOXING'] = 'NO'
-
-        # Désactive les erreurs strictes de Xcode 16 pour les vieux headers
         config.build_settings['CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER'] = 'NO'
-
-        # CORRECTIF BoringSSL-GRPC
-        if target.name.include? 'BoringSSL-GRPC'
-          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', 'GRPC_BAZEL_BUILD=1']
-          config.build_settings['USE_HEADER_MAP'] = 'NO'
-          config.build_settings['OTHER_CPLUSPLUSFLAGS'] = ['$(inherited)', '-Wno-error']
-        end
       end
     end
   end

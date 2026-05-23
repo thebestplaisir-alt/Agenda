@@ -29,7 +29,7 @@ kotlin {
         ios.deploymentTarget = "16.0"
         framework {
             baseName = "shared"
-            isStatic = true
+            isStatic = false // Passer en dynamique pour Firebase 11
         }
         
         // Versions compatibles Xcode 16
