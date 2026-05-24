@@ -25,22 +25,10 @@ target 'iosApp' do
         config.build_settings['ENABLE_USER_SCRIPT_SANDBOXING'] = 'NO'
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
         config.build_settings['ENABLE_BITCODE'] = 'NO'
-        config.build_settings['CLANG_ENABLE_CODE_COVERAGE'] = 'NO'
 
-        # Correction Xcode 16 pour les Pods sans Bundle ID
+        # Correction pour les Pods sans Bundle ID
         if config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'].nil?
            config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = "com.inchios.agenda.pod.#{target.name.gsub(' ', '-')}"
-        end
-
-        # SUPPRESSION RADICALE DU FLAG -G (Source du crash Xcode 16)
-        ['OTHER_CFLAGS', 'OTHER_CPLUSPLUSFLAGS', 'OTHER_LDFLAGS', 'OTHER_SWIFT_FLAGS'].each do |key|
-          if config.build_settings[key]
-            if config.build_settings[key].is_a?(Array)
-              config.build_settings[key].reject! { |f| f == '-G' || f.include?('serialize-diagnostics') }
-            else
-              config.build_settings[key] = config.build_settings[key].gsub(/-G\s?/, '').gsub(/--serialize-diagnostics\s?/, '').strip
-            end
-          end
         end
 
         # CORRECTIF BoringSSL-GRPC et gRPC : Désactivation ASM et nettoyage
