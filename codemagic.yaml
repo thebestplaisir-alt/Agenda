@@ -62,24 +62,20 @@ workflows:
           xcodegen generate
       - name: Install CocoaPods
         script: |
-          # 1. Préparer gradlew avec Java 17 proprement
+          # 1. Préparer gradlew avec Java 17 proprement (après le shebang)
           JAVA_PATH=$(/usr/libexec/java_home -v 17)
-          mv gradlew gradlew.bak
-          echo "#!/bin/sh" > gradlew
-          echo "export JAVA_HOME=$JAVA_PATH" >> gradlew
-          echo "export PATH=\$JAVA_HOME/bin:\$PATH" >> gradlew
-          tail -n +2 gradlew.bak >> gradlew
+          sed -i '' "1a\\
+          export JAVA_HOME=$JAVA_PATH\\
+          export PATH=\$JAVA_HOME/bin:\$PATH
+          " gradlew
           chmod +x gradlew
           
-          # 2. Générer le podspec et le dummy framework
+          # 2. Pré-compiler le framework pour iPhone (Arm64) - C'est ici qu'on verra la vraie erreur si elle existe
+          ./gradlew :shared:linkReleaseFrameworkIosArm64 --no-daemon --stacktrace
+          
+          # 3. Générer le podspec et installer les pods
           ./gradlew :shared:podspec :shared:generateDummyFramework --no-daemon
           
-          # 3. Vérifier et forcer la présence du framework pour CocoaPods
-          mkdir -p shared/build/cocoapods/framework/shared.framework
-          
-          # 4. Injecter Java dans le podspec pour Xcode
-          sed -i '' "s|set -ev|set -ev\\nexport JAVA_HOME=$JAVA_PATH\\nexport PATH=\$JAVA_HOME/bin:\$PATH|g" shared/shared.podspec
-
           cd iosApp
           pod install
       - name: Build iOS App
