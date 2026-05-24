@@ -8,14 +8,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,6 +26,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Pas de Edge-To-Edge ici, c'est souvent source de crash sur les vieux Android
         setContent {
             PadelTheme {
                 WearApp()
@@ -40,12 +37,15 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun PadelTheme(content: @Composable () -> Unit) {
+    // Utilisation de Material 2 (le plus compatible)
     MaterialTheme(
-        colorScheme = darkColorScheme(
+        colors = darkColors(
             primary = Color(0xFF2196F3),
             secondary = Color(0xFFFFA500),
             background = Color.Black,
-            surface = Color.Black
+            surface = Color.Black,
+            onBackground = Color.White,
+            onSurface = Color.White
         ),
         content = content
     )

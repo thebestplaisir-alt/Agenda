@@ -52,7 +52,7 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material.icons.extended)
-    implementation(libs.androidx.material3)
+    implementation("androidx.compose.material:material:1.7.8") // Matérial 2 stable
     implementation(libs.androidx.appcompat)
     
     // Wear OS specific
