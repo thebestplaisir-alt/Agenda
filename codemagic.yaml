@@ -62,20 +62,23 @@ workflows:
           xcodegen generate
       - name: Install CocoaPods
         script: |
-          # 1. Préparer gradlew avec Java 17 de manière robuste
+          # 1. Préparer gradlew avec Java 17 proprement
           JAVA_PATH=$(/usr/libexec/java_home -v 17)
-          printf "export JAVA_HOME=$JAVA_PATH\nexport PATH=\$JAVA_HOME/bin:\$PATH\n$(cat gradlew)" > gradlew
+          mv gradlew gradlew.bak
+          echo "#!/bin/sh" > gradlew
+          echo "export JAVA_HOME=$JAVA_PATH" >> gradlew
+          echo "export PATH=\$JAVA_HOME/bin:\$PATH" >> gradlew
+          tail -n +2 gradlew.bak >> gradlew
           chmod +x gradlew
           
-          # 2. Désactiver le sandbox Xcode au niveau global de l'agent
-          defaults write com.apple.dt.Xcode IDEDerivedDataPathScanning -bool NO
-          
-          # 3. Générer le podspec et le dummy
+          # 2. Générer le podspec et le dummy framework
           ./gradlew :shared:podspec :shared:generateDummyFramework --no-daemon
           
-          # 4. Debug : Voir le contenu du podspec pour vérifier l'injection
-          echo "--- DEBUG PODSPEC ---"
-          cat shared/shared.podspec | grep "script" -A 5 || true
+          # 3. Vérifier et forcer la présence du framework pour CocoaPods
+          mkdir -p shared/build/cocoapods/framework/shared.framework
+          
+          # 4. Injecter Java dans le podspec pour Xcode
+          sed -i '' "s|set -ev|set -ev\\nexport JAVA_HOME=$JAVA_PATH\\nexport PATH=\$JAVA_HOME/bin:\$PATH|g" shared/shared.podspec
 
           cd iosApp
           pod install
