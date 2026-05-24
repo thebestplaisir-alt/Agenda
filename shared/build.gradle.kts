@@ -32,13 +32,19 @@ kotlin {
             baseName = "shared"
             isStatic = true
         }
-        pod("FirebaseCore") { version = "11.4.0" }
-        pod("FirebaseAuth") { version = "11.4.0" }
-        pod("FirebaseFirestore") { version = "11.4.0" }
+        pod("FirebaseCore") { version = "11.3.0" }
+        pod("FirebaseAuth") { version = "11.3.0" }
+        pod("FirebaseFirestore") { version = "11.3.0" }
         
         // CORRECTIFS XCODE 15/16 : Sandboxing et compatibilité
-        extraSpecAttributes["pod_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO' }"
+        extraSpecAttributes["pod_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO', 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.inchios.agenda.shared' }"
         extraSpecAttributes["user_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO' }"
+    }
+
+    targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
+        binaries.all {
+            freeCompilerArgs += listOf("-Xdisable-phases=RemoveRedundantSafepoints", "-Xallocator=mimalloc")
+        }
     }
 
     sourceSets {

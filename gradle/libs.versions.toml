@@ -19,15 +19,15 @@ constraintlayout = "2.2.0"
 lifecycle = "2.8.7"
 room = "2.7.0-alpha11"
 kspVersion = "2.0.21-1.0.26"
-composeBom = "2025.02.00"
+composeBom = "2024.10.01"
 firebaseBom = "33.10.0"
 playServicesAuth = "21.5.1"
 coil = "2.7.0"
 credentials = "1.5.0"
 googleid = "1.2.0"
 splashscreen = "1.2.0"
-wearCompose = "1.6.0"
-horologist = "0.7.15"
+wearCompose = "1.4.1"
+horologist = "0.6.17"
 playServicesWearable = "19.0.0"
 concurrentFutures = "1.2.0"
 billing = "7.1.1"
@@ -45,6 +45,7 @@ androidx-activity = { group = "androidx.activity", name = "activity", version.re
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
+androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }

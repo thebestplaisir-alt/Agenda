@@ -46,6 +46,7 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
@@ -58,7 +59,6 @@ dependencies {
     implementation(libs.androidx.wear.compose.navigation)
     implementation(libs.play.services.wearable)
     implementation(libs.horologist.compose.layout)
-    implementation(libs.core.ktx)
 
     debugImplementation(libs.androidx.ui.tooling)
 }
