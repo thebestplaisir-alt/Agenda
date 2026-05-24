@@ -78,8 +78,8 @@ workflows:
           export JAVA_HOME=$(/usr/libexec/java_home -v 17)
           export PATH=$JAVA_HOME/bin:$PATH
           
-          # Pré-compilation du module shared pour soulager Xcode et éviter les timeouts
-          ./gradlew :shared:assembleReleaseAppleFrameworkForXcode --no-daemon
+          # Pré-compilation avec log détaillé pour voir la cause réelle de l'échec
+          ./gradlew :shared:assembleReleaseAppleFrameworkForXcode --no-daemon --info --stacktrace
           
           xcodebuild build \
             -workspace "$XCODE_WORKSPACE" \
