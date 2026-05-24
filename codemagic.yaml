@@ -65,7 +65,10 @@ workflows:
           export JAVA_HOME=$(/usr/libexec/java_home -v 17)
           export PATH=$JAVA_HOME/bin:$PATH
           
-          # Force la régénération du podspec pour inclure les nouveaux correctifs
+          # Génère le framework factice requis pour le podspec
+          ./gradlew :shared:generateDummyFramework --no-daemon
+          
+          # Force la régénération du podspec
           ./gradlew :shared:podspec --no-daemon
           
           cd iosApp
