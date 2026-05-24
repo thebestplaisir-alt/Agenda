@@ -48,7 +48,10 @@ jobs:
 
       - name: Build iOS App
         run: |
-          # Build final avec Xcode 16 (macos-15) sans indexation (source du flag -G)
+          # Sélection de Xcode 16.2 (plus stable que 16.4)
+          sudo xcode-select -s /Applications/Xcode_16.2.app || sudo xcode-select -s /Applications/Xcode_16.1.app || true
+          
+          # Build final sans indexation et sans diagnostics (source du flag -G)
           xcodebuild build \
             -workspace iosApp/iosApp.xcworkspace \
             -scheme iosApp \
@@ -57,6 +60,7 @@ jobs:
             -allowProvisioningUpdates \
             COMPILER_INDEX_STORE_ENABLE=NO \
             GCC_GENERATE_DEBUGGING_SYMBOLS=NO \
+            CLANG_SERIALIZE_DIAGNOSTICS=NO \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO
