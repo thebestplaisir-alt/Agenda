@@ -24,24 +24,25 @@ target 'iosApp' do
       target.build_configurations.each do |config|
         config.build_settings['ENABLE_USER_SCRIPT_SANDBOXING'] = 'NO'
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
+        config.build_settings['ENABLE_BITCODE'] = 'NO' # OBLIGATOIRE XCODE 16
 
         # Correction Xcode 16 pour les Pods sans Bundle ID
         if config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'].nil?
            config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = "com.inchios.agenda.pod.#{target.name.gsub(' ', '-')}"
         end
 
-        # CORRECTIF BoringSSL-GRPC et gRPC : Suppression du flag -G et optimisation
+        # Nettoyage systématique des flags non supportés (-G, etc) pour TOUS les targets
+        ['OTHER_CFLAGS', 'OTHER_CPLUSPLUSFLAGS', 'OTHER_LDFLAGS'].each do |key|
+          if config.build_settings[key]
+            config.build_settings[key] = config.build_settings[key].split(' ').reject { |f| f == '-G' || f == '--serialize-diagnostics' }.join(' ')
+          end
+        end
+
+        # CORRECTIF BoringSSL-GRPC et gRPC : Optimisation spécifique
         if target.name.include?('BoringSSL-GRPC') || target.name.include?('gRPC') || target.name.include?('FirebaseFirestore')
           config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', 'GRPC_BAZEL_BUILD=1']
           config.build_settings['USE_HEADER_MAP'] = 'NO'
           config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++14'
-
-          # Force la suppression du flag -G s'il est présent dans OTHER_CFLAGS ou OTHER_CPLUSPLUSFLAGS
-          ['OTHER_CFLAGS', 'OTHER_CPLUSPLUSFLAGS'].each do |key|
-            if config.build_settings[key]
-              config.build_settings[key] = config.build_settings[key].split(' ').reject { |flag| flag == '-G' }.join(' ')
-            end
-          end
         end
       end
     end
