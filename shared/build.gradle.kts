@@ -43,7 +43,7 @@ kotlin {
 
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
         binaries.all {
-            freeCompilerArgs += listOf("-Xdisable-phases=RemoveRedundantSafepoints", "-Xallocator=mimalloc")
+            freeCompilerArgs += listOf("-Xdisable-phases=RemoveRedundantSafepoints", "-Xallocator=mimalloc", "-Xpms=false")
         }
     }
 
