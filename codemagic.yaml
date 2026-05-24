@@ -78,8 +78,11 @@ workflows:
           export JAVA_HOME=$(/usr/libexec/java_home -v 17)
           export PATH=$JAVA_HOME/bin:$PATH
           
-          # Pré-compilation avec log détaillé pour voir la cause réelle de l'échec
-          ./gradlew :shared:assembleReleaseAppleFrameworkForXcode --no-daemon --info --stacktrace
+          # Nettoyage profond avant compilation
+          ./gradlew clean --no-daemon
+          
+          # Tentative de compilation du framework en mode Release, mais avec moins de pression
+          ./gradlew :shared:assembleReleaseAppleFrameworkForXcode --no-daemon --stacktrace
           
           xcodebuild build \
             -workspace "$XCODE_WORKSPACE" \
