@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "com.inchios.agendapadel.wear"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.inchios.agendapadel" // MODIFIÉ : Identique au téléphone pour le Play Store
         minSdk = 30
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 10098 // MODIFIÉ : Doit être plus élevé que la version mobile (98)
         versionName = "1.5.63"
     }
