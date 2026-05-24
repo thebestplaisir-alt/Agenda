@@ -5,13 +5,17 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,28 +25,40 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.wear.compose.material.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent { WearApp() }
+        setContent {
+            PadelTheme {
+                WearApp()
+            }
+        }
     }
 }
 
-@Preview(device = "id:wearos_large_round", showSystemUi = true)
 @Composable
-fun WearAppPreview() {
-    WearApp()
+fun PadelTheme(content: @Composable () -> Unit) {
+    MaterialTheme(
+        colorScheme = darkColorScheme(
+            primary = Color(0xFF2196F3),
+            secondary = Color(0xFFFFA500),
+            background = Color.Black,
+            surface = Color.Black
+        ),
+        content = content
+    )
 }
 
 @Composable
 fun WearApp(viewModel: PadelViewModel = viewModel()) {
     val state by viewModel.state
 
-    MaterialTheme {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = Color.Black
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -186,7 +202,6 @@ fun ScoreButton(
     }
 }
 
-@OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
 fun SmallIconButton(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
