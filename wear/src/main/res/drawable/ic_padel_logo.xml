@@ -1,0 +1,27 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="512dp"
+    android:height="512dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+
+    <!-- Background Circle (OLED Friendly Black/Dark) -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M256,256m-256,0a256,256 0,1 1,512 0a256,256 0,1 1,-512 0" />
+
+    <!-- Padel Racket Outline -->
+    <path
+        android:fillColor="#2196F3"
+        android:pathData="M256,80c-70,0 -126,56 -126,126c0,45 23,84 58,107l-12,99c-2,15 10,28 25,28h110c15,0 27,-13 25,-28l-12,-99c35,-23 58,-62 58,-107c0,-70 -56,-126 -126,-126zM256,280c-40,0 -74,-30 -79,-69l158,0c-5,39 -39,69 -79,69z" />
+
+    <!-- Padel Ball (Yellow) -->
+    <path
+        android:fillColor="#FFFF00"
+        android:pathData="M380,380m-40,0a40,40 0,1 1,80 0a40,40 0,1 1,-80 0" />
+
+    <!-- Decorative holes in racket -->
+    <path android:fillColor="#000000" android:pathData="M220,150h10v10h-10zM250,150h10v10h-10zM280,150h10v10h-10z" />
+    <path android:fillColor="#000000" android:pathData="M205,180h10v10h-10zM235,180h10v10h-10zM265,180h10v10h-10zM295,180h10v10h-10z" />
+    <path android:fillColor="#000000" android:pathData="M220,210h10v10h-10zM250,210h10v10h-10zM280,210h10v10h-10z" />
+
+</vector>
