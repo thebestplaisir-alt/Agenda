@@ -41,9 +41,17 @@ jobs:
           ./gradlew :shared:generateDummyFramework --no-daemon
           cd iosApp
           pod install
+          
+          # SCRIPT DE NETTOYAGE RADICAL DU FLAG -G
+          echo "Nettoyage des flags non supportés dans les fichiers xcconfig..."
+          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/-G//g' {} +
+          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/--serialize-diagnostics//g' {} +
 
       - name: Build iOS App
         run: |
+          # Sélection de Xcode 15 pour la stabilité si disponible, sinon Xcode 16 stabilisé
+          sudo xcode-select -s /Applications/Xcode_15.4.app || sudo xcode-select -s /Applications/Xcode_16.1.app || true
+
           xcodebuild build \
             -workspace iosApp/iosApp.xcworkspace \
             -scheme iosApp \
