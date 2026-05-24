@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.google.services) // AJOUTÉ : Plugin Google Services
+    // Supprimé : google.services pour éviter les crashs sur montres sans Play Services
 }
 
 android {
@@ -39,10 +39,7 @@ android {
 }
 
 dependencies {
-    // Importation du BOM Firebase pour gérer les versions
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics)
-    implementation(libs.firebase.firestore)
+    // Supprimé : Firebase pour compatibilité maximale montres Android classiques
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -55,7 +52,7 @@ dependencies {
     implementation("androidx.compose.material:material:1.7.8") // Matérial 2 stable
     implementation(libs.androidx.appcompat)
     
-    // Wear OS specific
+    // Wear OS specific (gardé pour les montres Wear OS, mais l'UI est en Material2 pour compatibilité)
     implementation(libs.androidx.wear.compose.material)
     implementation(libs.androidx.wear.compose.foundation)
     implementation(libs.androidx.wear.compose.navigation)

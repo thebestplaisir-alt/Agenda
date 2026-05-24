@@ -44,7 +44,7 @@ jobs:
 
       - name: Build Shared Framework (Release)
         run: |
-          ./gradlew :shared:assembleReleaseAppleFrameworkForXcode --no-daemon --stacktrace
+          ./gradlew :shared:podPublishReleaseFramework --no-daemon --stacktrace
 
       - name: Build iOS App
         run: |

@@ -81,8 +81,8 @@ workflows:
           # Nettoyage profond avant compilation
           ./gradlew clean --no-daemon
           
-          # Tentative de compilation du framework en mode Release, mais avec moins de pression
-          ./gradlew :shared:assembleReleaseAppleFrameworkForXcode --no-daemon --stacktrace
+          # Utilisation de la tâche correcte pour le plugin CocoaPods
+          ./gradlew :shared:podPublishReleaseFramework --no-daemon --stacktrace
           
           xcodebuild build \
             -workspace "$XCODE_WORKSPACE" \
