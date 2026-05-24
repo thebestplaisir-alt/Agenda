@@ -62,22 +62,25 @@ workflows:
           xcodegen generate
       - name: Install CocoaPods
         script: |
-          # 1. Configurer Java 17 proprement
+          # 1. Configurer Java 17
           JAVA_PATH=$(/usr/libexec/java_home -v 17)
           export JAVA_HOME=$JAVA_PATH
           export PATH=$JAVA_PATH/bin:$PATH
           chmod +x gradlew
           
-          # 2. PRÉ-COMPILATION DU FRAMEWORK (On le fait nous-mêmes pour bypass Xcode)
-          ./gradlew :shared:linkReleaseFrameworkIosArm64 --no-daemon
+          # 2. Créer le dummy pour CocoaPods (indispensable pour 'pod install')
+          ./gradlew :shared:generateDummyFramework --no-daemon
           
-          # 3. Créer la structure attendue par CocoaPods et copier le framework
+          # 3. COMPILATION RÉELLE avec logs détaillés pour voir l'erreur
+          echo "Démarrage de la compilation réelle du framework iOS..."
+          ./gradlew :shared:linkReleaseFrameworkIosArm64 --no-daemon --info --stacktrace || { echo "LA COMPILATION KOTLIN A ÉCHOUÉ. VOIR LES LOGS CI-DESSUS."; exit 1; }
+          
+          # 4. Copier le framework compilé vers le dossier CocoaPods
           mkdir -p shared/build/cocoapods/framework
-          cp -R shared/build/bin/iosArm64/releaseFramework/shared.framework shared/build/cocoapods/framework/
+          find shared/build/bin/iosArm64/releaseFramework -name "shared.framework" -exec cp -R {} shared/build/cocoapods/framework/ \;
           
-          # 4. Générer le podspec
+          # 5. Installer les pods
           ./gradlew :shared:podspec --no-daemon
-          
           cd iosApp
           pod install
       - name: Build iOS App
