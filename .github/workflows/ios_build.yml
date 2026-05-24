@@ -48,6 +48,7 @@ jobs:
 
       - name: Build iOS App
         run: |
+          # Build final avec Xcode 16 (macos-15)
           xcodebuild build \
             -workspace iosApp/iosApp.xcworkspace \
             -scheme iosApp \
