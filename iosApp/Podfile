@@ -37,6 +37,9 @@ target 'iosApp' do
           config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'GRPC_BAZEL_BUILD=1'
           config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'OPENSSL_NO_ASM=1'
           config.build_settings['USE_HEADER_MAP'] = 'NO'
+
+          # ANTI-FLAG -G : On désactive les symboles qui injectent ce flag sur Xcode 16
+          config.build_settings['GCC_GENERATE_DEBUGGING_SYMBOLS'] = 'NO'
         end
       end
     end
