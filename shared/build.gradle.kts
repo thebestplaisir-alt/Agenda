@@ -32,9 +32,9 @@ kotlin {
             baseName = "shared"
             isStatic = true
         }
-        pod("FirebaseCore") { version = "11.3.0" }
-        pod("FirebaseAuth") { version = "11.3.0" }
-        pod("FirebaseFirestore") { version = "11.3.0" }
+        pod("FirebaseCore") { version = "10.29.0" }
+        pod("FirebaseAuth") { version = "10.29.0" }
+        pod("FirebaseFirestore") { version = "10.29.0" }
         
         // CORRECTIFS XCODE 15/16 : Sandboxing et compatibilité
         extraSpecAttributes["pod_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO', 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.inchios.agenda.shared' }"
