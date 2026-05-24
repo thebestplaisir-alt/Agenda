@@ -29,8 +29,16 @@ jobs:
           path: ~/.konan
           key: ${{ runner.os }}-konan-${{ hashFiles('**/*.gradle.kts') }}
 
+      - name: Generate Xcode Project
+        run: |
+          brew install xcodegen
+          cd iosApp
+          xcodegen generate
+
       - name: Install CocoaPods
         run: |
+          chmod +x gradlew
+          ./gradlew :shared:generateDummyFramework --no-daemon
           cd iosApp
           pod install
 
