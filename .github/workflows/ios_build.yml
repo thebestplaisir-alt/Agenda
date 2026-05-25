@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     name: Build iOS App
-    runs-on: macos-15
+    runs-on: macos-14
     
     steps:
       - name: Checkout project
@@ -41,26 +41,15 @@ jobs:
           ./gradlew :shared:generateDummyFramework --no-daemon
           cd iosApp
           pod install
-          
-          # SCRIPT DE NETTOYAGE RADICAL
-          echo "Nettoyage des flags non supportés..."
-          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/-G//g' {} +
 
       - name: Build iOS App
         run: |
-          # Sélection de Xcode 16.2 (plus stable que 16.4)
-          sudo xcode-select -s /Applications/Xcode_16.2.app || sudo xcode-select -s /Applications/Xcode_16.1.app || true
-          
-          # Build final sans indexation et sans diagnostics (source du flag -G)
           xcodebuild build \
             -workspace iosApp/iosApp.xcworkspace \
             -scheme iosApp \
             -configuration Release \
             -destination 'generic/platform=iOS' \
             -allowProvisioningUpdates \
-            COMPILER_INDEX_STORE_ENABLE=NO \
-            GCC_GENERATE_DEBUGGING_SYMBOLS=NO \
-            CLANG_SERIALIZE_DIAGNOSTICS=NO \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO
