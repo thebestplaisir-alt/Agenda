@@ -35,13 +35,16 @@ target 'iosApp' do
            config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = "com.inchios.agenda.pod.#{target.name.gsub(' ', '-')}"
         end
 
-        # SUPPRESSION RADICALE DU FLAG -G (Source du crash Xcode 16)
+        # SUPPRESSION CHIRURGICALE DU FLAG -G (Source du crash Xcode 16)
         ['OTHER_CFLAGS', 'OTHER_CPLUSPLUSFLAGS', 'OTHER_LDFLAGS', 'OTHER_SWIFT_FLAGS'].each do |key|
           if config.build_settings[key]
             if config.build_settings[key].is_a?(Array)
-              config.build_settings[key].reject! { |f| f == '-G' || f.include?('serialize-diagnostics') }
+              config.build_settings[key].reject! { |f| f == '-G' || f == '--serialize-diagnostics' }
             else
-              config.build_settings[key] = config.build_settings[key].gsub(/-G\s?/, '').gsub(/--serialize-diagnostics\s?/, '').strip
+              # On ne remplace que si c'est un flag isolé par des espaces pour ne pas casser "BoringSSL-GRPC"
+              flags = config.build_settings[key].split(' ')
+              flags.reject! { |f| f == '-G' || f == '--serialize-diagnostics' }
+              config.build_settings[key] = flags.join(' ')
             end
           end
         end
