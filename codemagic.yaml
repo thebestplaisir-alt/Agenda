@@ -72,13 +72,14 @@ workflows:
           ./gradlew :shared:podspec --no-daemon
           
           cd iosApp
-          pod install
+          pod install --repo-update
           
-          # Nettoyage sécurisé des flags -G et serialize-diagnostics (ne touche pas à BoringSSL-GRPC)
+          # Nettoyage sécurisé des flags -G et serialize-diagnostics (compatible macOS sed)
           echo "Cleaning incompatible flags in Pods..."
-          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/[[:<:]]-G[[:>:]]//g' {} +
+          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/-G //g' {} +
+          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/ -G//g' {} +
           find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/--serialize-diagnostics//g' {} +
-          grep -r -- '[[:<:]]-G[[:>:]]' Pods || echo "Plus de flag -G isolé trouvé."
+          grep -r -- '-G' Pods | grep -v "BoringSSL-GRPC" || echo "Plus de flag -G isolé trouvé."
       - name: Build iOS App
         script: |
           export JAVA_HOME=$(/usr/libexec/java_home -v 17)

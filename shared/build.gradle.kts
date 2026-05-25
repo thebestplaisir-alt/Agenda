@@ -31,15 +31,15 @@ kotlin {
         framework {
             baseName = "shared"
             isStatic = true
-            // LIEN STATIQUE POUR FIREBASE (Evite les erreurs de flags Clang)
+            // LIEN STATIQUE ET FIX XCODE 16
             linkerOpts("-ObjC")
         }
-        pod("FirebaseCore") { version = "10.29.0" }
-        pod("FirebaseAuth") { version = "10.29.0" }
-        pod("FirebaseFirestore") { version = "10.29.0" }
+        pod("FirebaseCore") { version = "11.8.0" }
+        pod("FirebaseAuth") { version = "11.8.0" }
+        pod("FirebaseFirestore") { version = "11.8.0" }
         
-        // CORRECTIFS XCODE 15/16 : Sandboxing et compatibilité
-        extraSpecAttributes["pod_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO', 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.inchios.agenda.shared' }"
+        // CORRECTIFS XCODE 16
+        extraSpecAttributes["pod_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO', 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.inchios.agenda.shared', 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES' }"
         extraSpecAttributes["user_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO' }"
     }
 
