@@ -31,6 +31,8 @@ kotlin {
         framework {
             baseName = "shared"
             isStatic = true
+            // LIEN STATIQUE POUR FIREBASE (Evite les erreurs de flags Clang)
+            linkerOpts("-ObjC")
         }
         pod("FirebaseCore") { version = "10.29.0" }
         pod("FirebaseAuth") { version = "10.29.0" }
