@@ -36,14 +36,16 @@ target 'iosApp' do
            config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = "com.inchios.agenda.pod.#{target.name.gsub(' ', '-')}"
         end
 
-        # NETTOYAGE EXHAUSTIF DU FLAG -G POUR TOUS LES PODS (Conseil Copilot v2)
+        # NETTOYAGE EXHAUSTIF DU FLAG -G POUR TOUS LES PODS (Diagnostic Final)
         ['OTHER_CFLAGS', 'OTHER_CPLUSPLUSFLAGS', 'OTHER_LDFLAGS', 'OTHER_SWIFT_FLAGS'].each do |key|
-          if config.build_settings[key]
-            if config.build_settings[key].is_a?(Array)
-              config.build_settings[key].reject! { |f| f == '-G' || f.include?('serialize-diagnostics') }
+          value = config.build_settings[key]
+          if value
+            if value.is_a?(Array)
+              value.reject! { |f| f.include?('-G') || f.include?('--serialize-diagnostics') }
             else
-              # Nettoyage sauvage du flag -G
-              config.build_settings[key] = config.build_settings[key].gsub(/\s*-G\s*/, ' ').gsub(/--serialize-diagnostics\s?/, '').strip
+              value = value.gsub(/\s*-G\s*/, ' ')
+              value = value.gsub(/\s*--serialize-diagnostics\s*/, ' ')
+              config.build_settings[key] = value
             end
           end
         end
