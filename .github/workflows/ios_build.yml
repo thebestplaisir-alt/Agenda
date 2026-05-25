@@ -27,6 +27,8 @@ jobs:
         run: |
           brew install xcodegen
           cd iosApp
+          # Nettoyage profond
+          rm -rf iosApp.xcodeproj iosApp.xcworkspace
           xcodegen generate
 
       - name: Install CocoaPods
@@ -36,14 +38,14 @@ jobs:
           cd iosApp
           pod install
           
-          # NETTOYAGE CHIRURGICAL DU FLAG -G (Source du crash Xcode 16)
-          # On ne remplace -G que s'il est entouré d'espaces pour ne pas casser "BoringSSL-GRPC"
-          echo "Nettoyage des flags Clang sur Xcode 16..."
-          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/ -G / /g' {} +
-          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/ -G$/ /g' {} +
+      - name: List Schemes
+        run: |
+          cd iosApp
+          xcodebuild -workspace iosApp.xcworkspace -list
 
       - name: Build iOS App
         run: |
+          # Build final avec Xcode 16 (macos-15)
           xcodebuild build \
             -workspace iosApp/iosApp.xcworkspace \
             -scheme iosApp \

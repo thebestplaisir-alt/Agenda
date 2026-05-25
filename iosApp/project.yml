@@ -1,7 +1,10 @@
 name: iosApp
 options:
   bundleIdPrefix: com.inchios
-  xcodeVersion: "15.0"
+  xcodeVersion: "16.0"
+  schemes:
+    iosApp:
+      shared: true
 targets:
   iosApp:
     type: application
