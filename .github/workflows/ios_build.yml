@@ -38,17 +38,21 @@ jobs:
           cd iosApp
           pod install
 
-      - name: Clean unsupported flags from Pods
+      - name: Debug and Clean flags -G
         run: |
           cd iosApp
+          echo "Checking for -G flags before cleaning..."
+          grep -r -- '-G' Pods || true
+          
           echo "Cleaning -G flag and serialize-diagnostics from Pods configurations..."
-          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/-G //g' {} +
-          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/ -G//g' {} +
-          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/--serialize-diagnostics//g' {} +
-          # Verification
+          # Suppression massive dans les xcconfig, podspec et scripts
+          find Pods -type f \( -name "*.xcconfig" -o -name "*.podspec" -o -name "*.sh" -o -name "*.py" \) -exec sed -i '' 's/-G //g' {} +
+          find Pods -type f \( -name "*.xcconfig" -o -name "*.podspec" -o -name "*.sh" -o -name "*.py" \) -exec sed -i '' 's/ -G//g' {} +
+          find Pods -type f \( -name "*.xcconfig" -o -name "*.podspec" -o -name "*.sh" -o -name "*.py" \) -exec sed -i '' 's/--serialize-diagnostics//g' {} +
+          
           echo "Verification of remaining -G flags:"
           grep -r -- '-G' Pods || echo "No more -G flags found."
-          
+
       - name: List Schemes
         run: |
           cd iosApp

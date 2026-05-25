@@ -36,15 +36,21 @@ target 'iosApp' do
            config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = "com.inchios.agenda.pod.#{target.name.gsub(' ', '-')}"
         end
 
-        # NETTOYAGE EXHAUSTIF DU FLAG -G POUR TOUS LES PODS (Conseil Copilot)
+        # NETTOYAGE EXHAUSTIF DU FLAG -G POUR TOUS LES PODS (Conseil Copilot v2)
         ['OTHER_CFLAGS', 'OTHER_CPLUSPLUSFLAGS', 'OTHER_LDFLAGS', 'OTHER_SWIFT_FLAGS'].each do |key|
           if config.build_settings[key]
             if config.build_settings[key].is_a?(Array)
               config.build_settings[key].reject! { |f| f == '-G' || f.include?('serialize-diagnostics') }
             else
-              config.build_settings[key] = config.build_settings[key].gsub(/-G\s?/, '').gsub(/--serialize-diagnostics\s?/, '').strip
+              # Nettoyage sauvage du flag -G
+              config.build_settings[key] = config.build_settings[key].gsub(/\s*-G\s*/, ' ').gsub(/--serialize-diagnostics\s?/, '').strip
             end
           end
+        end
+
+        # Debug flags for critical targets
+        if target.name.include?('abseil') || target.name.include?('BoringSSL')
+          puts "==> Flags for #{target.name} (#{config.name}): CFLAGS=#{config.build_settings['OTHER_CFLAGS']}, CXXFLAGS=#{config.build_settings['OTHER_CPLUSPLUSFLAGS']}"
         end
 
         # CORRECTIF BoringSSL-GRPC et gRPC : Désactivation ASM et nettoyage
