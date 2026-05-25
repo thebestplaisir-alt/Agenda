@@ -54,6 +54,11 @@ jobs:
           cd iosApp
           xcodebuild -workspace iosApp.xcworkspace -list
 
+      - name: Pre-build flag check
+        run: |
+          cd iosApp
+          grep -r -- '-G' Pods || echo "Aucun flag -G trouvé 👍"
+
       - name: Build iOS App
         run: |
           # Build final avec Xcode 16 (macos-15)
@@ -67,6 +72,12 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO
+
+      - name: Show DerivedData logs on failure
+        if: failure()
+        run: |
+          echo "Dumping build logs for debugging..."
+          find ~/Library/Developer/Xcode/DerivedData -name "*.log" -exec cat {} \; || true
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
