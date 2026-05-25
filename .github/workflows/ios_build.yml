@@ -42,8 +42,8 @@ jobs:
         run: |
           cd iosApp
           echo "Cleaning -G flag and serialize-diagnostics from Pods configurations..."
-          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/ -G / /g' {} +
-          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/ -G$/ /g' {} +
+          # Nettoyage sécurisé (ne touche pas à BoringSSL-GRPC)
+          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/[[:<:]]-G[[:>:]]//g' {} +
           find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/--serialize-diagnostics//g' {} +
           
           echo "Final verification of remaining -G flags:"

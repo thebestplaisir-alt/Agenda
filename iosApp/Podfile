@@ -36,16 +36,19 @@ target 'iosApp' do
            config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = "com.inchios.agenda.pod.#{target.name.gsub(' ', '-')}"
         end
 
-        # NETTOYAGE EXHAUSTIF DU FLAG -G POUR TOUS LES PODS (Diagnostic Final)
+        # NETTOYAGE PRÉCIS DU FLAG -G (Évite de casser BoringSSL-GRPC)
         ['OTHER_CFLAGS', 'OTHER_CPLUSPLUSFLAGS', 'OTHER_LDFLAGS', 'OTHER_SWIFT_FLAGS'].each do |key|
           value = config.build_settings[key]
           if value
             if value.is_a?(Array)
-              value.reject! { |f| f.include?('-G') || f.include?('--serialize-diagnostics') }
+              # On ne supprime que si le flag est EXACTEMENT '-G'
+              value.reject! { |f| f == '-G' || f == '--serialize-diagnostics' }
             else
-              value = value.gsub(/\s*-G\s*/, ' ')
-              value = value.gsub(/\s*--serialize-diagnostics\s*/, ' ')
-              config.build_settings[key] = value
+              # On utilise des expressions régulières pour ne pas toucher à BoringSSL-GRPC
+              # On cherche -G entouré d'espaces ou en début/fin de chaîne
+              value = value.gsub(/(^|\s)-G(\s|$)/, ' ')
+              value = value.gsub(/--serialize-diagnostics/, ' ')
+              config.build_settings[key] = value.strip
             end
           end
         end
