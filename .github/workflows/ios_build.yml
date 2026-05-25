@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     name: Build iOS App
-    runs-on: macos-15
+    runs-on: macos-14
     
     steps:
       - name: Checkout project
@@ -23,16 +23,12 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
-      - name: Cache Kotlin Konan
-        uses: actions/cache@v4
-        with:
-          path: ~/.konan
-          key: ${{ runner.os }}-konan-${{ hashFiles('**/*.gradle.kts') }}
-
       - name: Generate Xcode Project
         run: |
           brew install xcodegen
           cd iosApp
+          # Nettoyage des anciens projets pour éviter les conflits de format
+          rm -rf iosApp.xcodeproj iosApp.xcworkspace
           xcodegen generate
 
       - name: Install CocoaPods
@@ -41,19 +37,20 @@ jobs:
           ./gradlew :shared:generateDummyFramework --no-daemon
           cd iosApp
           pod install
+          
+          # NETTOYAGE INTELLIGENT DU FLAG -G
+          echo "Nettoyage chirurgical des flags..."
+          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/[[:space:]]-G[[:space:]]/ /g' {} +
+          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/[[:space:]]-G$/ /g' {} +
 
       - name: Build iOS App
         run: |
-          # Build final avec Xcode 16 (macos-15) sans flags de debug
           xcodebuild build \
             -workspace iosApp/iosApp.xcworkspace \
             -scheme iosApp \
             -configuration Release \
             -destination 'generic/platform=iOS' \
             -allowProvisioningUpdates \
-            COMPILER_INDEX_STORE_ENABLE=NO \
-            GCC_GENERATE_DEBUGGING_SYMBOLS=NO \
-            CLANG_SERIALIZE_DIAGNOSTICS=NO \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO
