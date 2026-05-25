@@ -29,22 +29,20 @@ target 'iosApp' do
         config.build_settings['CLANG_ENABLE_CODE_COVERAGE'] = 'NO'
         config.build_settings['LLVM_LTO'] = 'NO'
         config.build_settings['DEBUG_INFORMATION_FORMAT'] = 'dwarf' # Pas de dSYM pour la rapidité CI
+        config.build_settings['CLANG_SERIALIZE_DIAGNOSTICS'] = 'NO'
 
         # Correction pour les Pods sans Bundle ID
         if config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'].nil?
            config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = "com.inchios.agenda.pod.#{target.name.gsub(' ', '-')}"
         end
 
-        # SUPPRESSION CHIRURGICALE DU FLAG -G (Source du crash Xcode 16)
+        # NETTOYAGE EXHAUSTIF DU FLAG -G POUR TOUS LES PODS (Conseil Copilot)
         ['OTHER_CFLAGS', 'OTHER_CPLUSPLUSFLAGS', 'OTHER_LDFLAGS', 'OTHER_SWIFT_FLAGS'].each do |key|
           if config.build_settings[key]
             if config.build_settings[key].is_a?(Array)
-              config.build_settings[key].reject! { |f| f == '-G' || f == '--serialize-diagnostics' }
+              config.build_settings[key].reject! { |f| f == '-G' || f.include?('serialize-diagnostics') }
             else
-              # On ne remplace que si c'est un flag isolé par des espaces pour ne pas casser "BoringSSL-GRPC"
-              flags = config.build_settings[key].split(' ')
-              flags.reject! { |f| f == '-G' || f == '--serialize-diagnostics' }
-              config.build_settings[key] = flags.join(' ')
+              config.build_settings[key] = config.build_settings[key].gsub(/-G\s?/, '').gsub(/--serialize-diagnostics\s?/, '').strip
             end
           end
         end
@@ -55,10 +53,7 @@ target 'iosApp' do
           config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'GRPC_BAZEL_BUILD=1'
           config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'OPENSSL_NO_ASM=1'
           config.build_settings['USE_HEADER_MAP'] = 'NO'
-
-          # ANTI-FLAG -G : On désactive tout ce qui injecte ce flag
           config.build_settings['GCC_GENERATE_DEBUGGING_SYMBOLS'] = 'NO'
-          config.build_settings['ENABLE_DEBUG_INCREMENTAL_BUILD'] = 'NO'
           config.build_settings['STRIP_INSTALLED_PRODUCT'] = 'YES'
           config.build_settings['CLANG_SERIALIZE_DIAGNOSTICS'] = 'NO'
         end

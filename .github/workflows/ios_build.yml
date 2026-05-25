@@ -37,6 +37,17 @@ jobs:
           ./gradlew :shared:generateDummyFramework --no-daemon
           cd iosApp
           pod install
+
+      - name: Clean unsupported flags from Pods
+        run: |
+          cd iosApp
+          echo "Cleaning -G flag and serialize-diagnostics from Pods configurations..."
+          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/-G //g' {} +
+          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/ -G//g' {} +
+          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/--serialize-diagnostics//g' {} +
+          # Verification
+          echo "Verification of remaining -G flags:"
+          grep -r -- '-G' Pods || echo "No more -G flags found."
           
       - name: List Schemes
         run: |
