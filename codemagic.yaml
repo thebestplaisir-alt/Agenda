@@ -73,6 +73,13 @@ workflows:
           
           cd iosApp
           pod install
+          
+          # Nettoyage des flags -G et serialize-diagnostics incompatibles Xcode 16
+          echo "Cleaning incompatible flags in Pods..."
+          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/ -G / /g' {} +
+          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/ -G$/ /g' {} +
+          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/--serialize-diagnostics//g' {} +
+          grep -r -- '-G' Pods || echo "Plus de flag -G trouvé."
       - name: Build iOS App
         script: |
           export JAVA_HOME=$(/usr/libexec/java_home -v 17)
