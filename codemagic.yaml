@@ -33,16 +33,18 @@ workflows:
     max_build_duration: 15
     environment:
       java: 17
-      xcode: 16.1
+      xcode: 16.2
     scripts:
       - name: Build Kotlin Framework
         script: |
           chmod +x gradlew
           export JAVA_HOME=$(/usr/libexec/java_home -v 17)
           
-          # Nettoyage total pour éviter les conflits de SDK
+          # Nettoyage RADICAL des caches pour supprimer le SDK corrompu
           rm -rf ~/.konan
           rm -rf ~/.gradle/caches
+          rm -rf ~/Library/Caches/CocoaPods
+          pod cache clean --all
           
           # Cette tâche génère le framework iOS
           ./gradlew :shared:podPublishReleaseFramework --no-daemon
@@ -58,7 +60,7 @@ workflows:
         XCODE_WORKSPACE: "iosApp/iosApp.xcworkspace"
         XCODE_SCHEME: "iosApp"
       java: 17
-      xcode: latest
+      xcode: 16.2
       cocoapods: default
     scripts:
       - name: Setup Environment
