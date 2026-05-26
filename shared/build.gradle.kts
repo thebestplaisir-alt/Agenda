@@ -24,13 +24,22 @@ kotlin {
     iosSimulatorArm64()
 
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
+        // Correctif global pour la compilation ET le lien (Linking) sur Xcode 16
+        val xcode16Flags = "-Xoverride-konan-properties=clangFlags.apple_sdk=-fmodules -fbuiltin -D_DARWIN_C_SOURCE"
+        
         compilations.all {
-            // Ligne unique de correction pour Xcode 16 (D DARWIN_C_SOURCE inclus)
-            kotlinOptions.freeCompilerArgs += "-Xoverride-konan-properties=clangFlags.apple_sdk=-fmodules -fbuiltin -D_DARWIN_C_SOURCE"
-
+            kotlinOptions.freeCompilerArgs += xcode16Flags
+            
+            // Correction spécifique pour cinterop
             cinterops.all {
                 compilerOpts("-fmodules", "-fbuiltin", "-D_DARWIN_C_SOURCE")
             }
+        }
+        
+        binaries.all {
+            freeCompilerArgs += xcode16Flags
+            // On aide le linker à ne pas être trop strict sur les symboles dupliqués de Firebase
+            linkerOpts("-Xlinker", "-no_warn_duplicate_libraries")
         }
     }
 
