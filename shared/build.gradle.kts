@@ -18,19 +18,14 @@ kotlin {
         }
     }
 
-    // Configuration des cibles iOS
-    iosX64()
+    // Configuration simplifiée pour iOS (Uniquement ARM64 pour le test)
     iosArm64()
-    iosSimulatorArm64()
 
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
-        // Correctif global pour la compilation ET le lien (Linking) sur Xcode 16
         val xcode16Flags = "-Xoverride-konan-properties=clangFlags.apple_sdk=-fmodules -fbuiltin -D_DARWIN_C_SOURCE"
         
         compilations.all {
             kotlinOptions.freeCompilerArgs += xcode16Flags
-            
-            // Correction spécifique pour cinterop
             cinterops.all {
                 compilerOpts("-fmodules", "-fbuiltin", "-D_DARWIN_C_SOURCE")
             }
@@ -38,7 +33,8 @@ kotlin {
         
         binaries.all {
             freeCompilerArgs += xcode16Flags
-            // On aide le linker à ne pas être trop strict sur les symboles dupliqués de Firebase
+            // On désactive les optimisations de liaison qui font souvent planter Firebase sur Xcode 16
+            freeCompilerArgs += "-Xdisable-phases=RemoveRedundantSafepoints"
             linkerOpts("-Xlinker", "-no_warn_duplicate_libraries")
         }
     }
