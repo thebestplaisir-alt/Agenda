@@ -39,17 +39,8 @@ workflows:
           chmod +x gradlew
           export JAVA_HOME=$(/usr/libexec/java_home -v 17)
           
-          # On simule TOUTES les variables que Xcode envoie normalement
-          ./gradlew :shared:embedAndSignAppleFrameworkForXcode \
-            -PXCODE_CONFIGURATION=Release \
-            -PCOCOAPODS=YES \
-            -PSDK_NAME=iphoneos \
-            -PTARGET_BUILD_DIR=$(pwd)/build/ios \
-            -PFRAMEWORKS_FOLDER_PATH=Frameworks \
-            -Pbuiltin_ARCHS=arm64 \
-            -Parch=arm64 \
-            -Ptarget=iosArm64 \
-            --no-daemon
+          # On utilise la tâche autonome qui ne dépend pas de Xcode
+          ./gradlew :shared:podPublishReleaseFramework --no-daemon
 
   ios-workflow:
     name: Agenda iOS Workflow
