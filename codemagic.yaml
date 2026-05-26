@@ -40,14 +40,24 @@ workflows:
           chmod +x gradlew
           export JAVA_HOME=$(/usr/libexec/java_home -v 17)
           
-          # Nettoyage RADICAL des caches pour supprimer le SDK corrompu
+          # Nettoyage total
           rm -rf ~/.konan
           rm -rf ~/.gradle/caches
           rm -rf ~/Library/Caches/CocoaPods
           pod cache clean --all
           
-          # Cette tâche génère le framework iOS
-          ./gradlew :shared:podPublishReleaseFramework --no-daemon
+          # On tente la compilation avec capture de log et verbosité maximale
+          # On utilise --info pour voir l'erreur du Linker en détail
+          if ! ./gradlew :shared:podPublishReleaseFramework --info --stacktrace --no-daemon > build_log.txt 2>&1; then
+              echo "------------------------------------------"
+              echo "BUILD FAILED - LOG DUMP START"
+              echo "------------------------------------------"
+              cat build_log.txt
+              echo "------------------------------------------"
+              echo "BUILD FAILED - LOG DUMP END"
+              echo "------------------------------------------"
+              exit 1
+          fi
 
   ios-workflow:
     name: Agenda iOS Workflow
