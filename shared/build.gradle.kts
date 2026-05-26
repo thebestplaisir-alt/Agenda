@@ -25,11 +25,9 @@ kotlin {
 
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
         compilations.all {
-            kotlinOptions.freeCompilerArgs += listOf(
-                "-Xoverride-konan-properties=clangFlags.apple_sdk=-fmodules -fbuiltin",
-                "-Xcc-options", "-fmodules",
-                "-Xcc-options", "-fbuiltin"
-            )
+            // Ligne unique de correction pour Xcode 16 (D DARWIN_C_SOURCE inclus)
+            kotlinOptions.freeCompilerArgs += "-Xoverride-konan-properties=clangFlags.apple_sdk=-fmodules -fbuiltin -D_DARWIN_C_SOURCE"
+
             cinterops.all {
                 compilerOpts("-fmodules", "-fbuiltin", "-D_DARWIN_C_SOURCE")
             }
