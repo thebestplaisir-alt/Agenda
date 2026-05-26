@@ -60,13 +60,17 @@ workflows:
           cd iosApp
           xcodegen generate
           
-          # Configuration de l'environnement pour le script de build Kotlin (Xcode 16)
-          # On crée .xcode.env.local qui est lu automatiquement par Kotlin
+          # 1. Création d'un lien symbolique pour gradlew (Fix crucial pour Xcode 16)
+          # Cela permet au script de Kotlin de trouver gradlew même s'il cherche ./gradlew
+          ln -sf ../gradlew gradlew
+          chmod +x ../gradlew
+          
+          # 2. Configuration de l'environnement pour Xcode
           JAVA_PATH=$(/usr/libexec/java_home -v 17)
           echo "export JAVA_HOME=$JAVA_PATH" > .xcode.env.local
           echo "export PATH=\$JAVA_HOME/bin:\$PATH" >> .xcode.env.local
           
-          echo ".xcode.env.local créé avec JAVA_HOME=$JAVA_PATH"
+          echo "Environnement Xcode configuré et lien gradlew créé."
       - name: Install CocoaPods
         script: |
           chmod +x gradlew
