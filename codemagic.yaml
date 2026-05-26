@@ -60,12 +60,13 @@ workflows:
           cd iosApp
           xcodegen generate
           
-          # Création du fichier d'environnement pour Xcode dans les deux emplacements possibles
+          # Configuration de l'environnement pour le script de build Kotlin (Xcode 16)
+          # On crée .xcode.env.local qui est lu automatiquement par Kotlin
           JAVA_PATH=$(/usr/libexec/java_home -v 17)
-          echo "export JAVA_HOME=$JAVA_PATH" > .xcode.env
-          echo "export PATH=\$JAVA_HOME/bin:\$PATH" >> .xcode.env
-          cp .xcode.env ../.xcode.env
-          echo "Xcode environment file created and copied to root."
+          echo "export JAVA_HOME=$JAVA_PATH" > .xcode.env.local
+          echo "export PATH=\$JAVA_HOME/bin:\$PATH" >> .xcode.env.local
+          
+          echo ".xcode.env.local créé avec JAVA_HOME=$JAVA_PATH"
       - name: Install CocoaPods
         script: |
           chmod +x gradlew
