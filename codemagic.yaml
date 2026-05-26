@@ -28,21 +28,23 @@ workflows:
           failure: true
 
   ios-test:
-    name: Test Minimal iOS Build
+    name: Test Minimal Kotlin iOS
     instance_type: mac_mini_m1
-    max_build_duration: 10
+    max_build_duration: 15
     environment:
       java: 17
+      xcode: 15.4
     scripts:
-      - name: Build Shared Module Only
+      - name: Build Kotlin Framework
         script: |
           chmod +x gradlew
           export JAVA_HOME=$(/usr/libexec/java_home -v 17)
           
-          # Nettoyage profond du cache Kotlin Native pour forcer la ré-indexation avec Xcode 16
-          rm -rf ~/.konan/dependencies
+          # Nettoyage total pour éviter les conflits de SDK
+          rm -rf ~/.konan
+          rm -rf ~/.gradle/caches
           
-          # On utilise la tâche autonome
+          # Cette tâche génère le framework iOS
           ./gradlew :shared:podPublishReleaseFramework --no-daemon
 
   ios-workflow:
@@ -56,7 +58,7 @@ workflows:
         XCODE_WORKSPACE: "iosApp/iosApp.xcworkspace"
         XCODE_SCHEME: "iosApp"
       java: 17
-      xcode: 16.0
+      xcode: 15.4
       cocoapods: default
     scripts:
       - name: Setup Environment
