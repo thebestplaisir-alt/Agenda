@@ -46,15 +46,13 @@ workflows:
           rm -rf ~/Library/Caches/CocoaPods
           pod cache clean --all
           
-          # On tente la compilation avec capture de log et verbosité maximale
-          # On utilise --info pour voir l'erreur du Linker en détail
-          if ! ./gradlew :shared:podPublishReleaseFramework --info --stacktrace --no-daemon > build_log.txt 2>&1; then
+          # On tente la compilation avec capture de log
+          if ! ./gradlew :shared:podPublishReleaseFramework --info --no-daemon > build_log.txt 2>&1; then
               echo "------------------------------------------"
-              echo "BUILD FAILED - LOG DUMP START"
+              echo "VRAIE ERREUR DU LINKER CI-DESSOUS :"
               echo "------------------------------------------"
-              cat build_log.txt
-              echo "------------------------------------------"
-              echo "BUILD FAILED - LOG DUMP END"
+              # On cherche spécifiquement les erreurs de type 'ld:' ou 'error:'
+              grep -C 5 "ld:" build_log.txt || grep -B 20 "FAILED" build_log.txt || tail -n 100 build_log.txt
               echo "------------------------------------------"
               exit 1
           fi

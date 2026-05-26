@@ -18,7 +18,7 @@ kotlin {
         }
     }
 
-    // Configuration simplifiée pour iOS (Uniquement ARM64 pour le test)
+    // Uniquement ARM64 pour stabiliser le test
     iosArm64()
 
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
@@ -33,8 +33,8 @@ kotlin {
         
         binaries.all {
             freeCompilerArgs += xcode16Flags
-            // On désactive les optimisations de liaison qui font souvent planter Firebase sur Xcode 16
-            freeCompilerArgs += "-Xdisable-phases=RemoveRedundantSafepoints"
+            // On force le Linker classique de Xcode pour éviter les bugs de Xcode 16
+            linkerOpts("-Xlinker", "-ld64")
             linkerOpts("-Xlinker", "-no_warn_duplicate_libraries")
         }
     }
@@ -54,7 +54,6 @@ kotlin {
         pod("FirebaseFirestore") { version = "11.8.0" }
         
         extraSpecAttributes["pod_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO', 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.inchios.agenda.shared', 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES' }"
-        extraSpecAttributes["user_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO' }"
     }
 
     sourceSets {
