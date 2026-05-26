@@ -27,6 +27,26 @@ workflows:
           success: true
           failure: true
 
+  ios-test:
+    name: Test Minimal iOS Build
+    instance_type: mac_mini_m1
+    max_build_duration: 10
+    environment:
+      java: 17
+    scripts:
+      - name: Build Shared Module Only
+        script: |
+          chmod +x gradlew
+          export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+          # On teste la commande exacte que Xcode essaie de lancer
+          ./gradlew :shared:embedAndSignAppleFrameworkForXcode \
+            -PXCODE_CONFIGURATION=Release \
+            -PCOCOAPODS=YES \
+            -Psdk=iphoneos \
+            -Parch=arm64 \
+            -Ptarget=iosArm64 \
+            --no-daemon
+
   ios-workflow:
     name: Agenda iOS Workflow
     max_build_duration: 60
