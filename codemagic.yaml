@@ -29,7 +29,7 @@ workflows:
 
   ios-test:
     name: Test Minimal Kotlin iOS
-    instance_type: mac_pro
+    instance_type: mac_mini_m1
     max_build_duration: 15
     environment:
       java: 17
@@ -60,7 +60,7 @@ workflows:
   ios-workflow:
     name: Agenda iOS Workflow
     max_build_duration: 60
-    instance_type: mac_pro
+    instance_type: mac_mini_m1
     environment:
       groups:
         - google_play
