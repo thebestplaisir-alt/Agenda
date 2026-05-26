@@ -7,24 +7,22 @@ target 'iosApp' do
   pod 'shared', :path => '../shared'
 
   post_install do |installer|
+    # Calcul du chemin absolu vers la racine du projet
+    project_root = File.expand_path('..', __dir__)
+    gradlew_path = File.join(project_root, 'gradlew')
+    java_home = `/usr/libexec/java_home -v 17`.strip
+
     installer.pods_project.targets.each do |target|
       target.build_phases.each do |phase|
         if phase.respond_to?(:shell_script) && phase.shell_script.include?('gradlew')
-          # Script ultra-robuste pour trouver gradlew et injecter Java
+          # On remplace ./gradlew par le chemin ABSOLU et on injecte Java
+          # On retire le "set -e" s'il existe pour capturer l'erreur proprement
+          original_script = phase.shell_script.gsub('set -e', '')
           phase.shell_script = <<~SH
-            set -x
-            export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+            export JAVA_HOME="#{java_home}"
             export PATH="$JAVA_HOME/bin:$PATH"
-
-            # Recherche de gradlew en remontant
-            GRADLEW_PATH=$(find . -name gradlew -maxdepth 3 | head -n 1)
-            if [ -z "$GRADLEW_PATH" ]; then GRADLEW_PATH="../gradlew"; fi
-            if [ ! -f "$GRADLEW_PATH" ]; then GRADLEW_PATH="../../gradlew"; fi
-
-            echo "Using gradlew at: $GRADLEW_PATH"
-
-            # On redirige les erreurs vers un fichier pour le debug
-            #{phase.shell_script.gsub('./gradlew', "$GRADLEW_PATH")} 2>&1 | tee build_shared_error.log
+            echo "Building with gradlew at: #{gradlew_path}"
+            #{original_script.gsub('./gradlew', gradlew_path)}
           SH
         end
       end
