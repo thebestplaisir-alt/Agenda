@@ -26,13 +26,12 @@ kotlin {
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
         compilations.all {
             kotlinOptions.freeCompilerArgs += listOf(
-                "-Xoverride-konan-properties=clangFlags.apple_sdk=-fmodules -fbuiltin -D_ANSI_SOURCE",
-                "-Xoverride-konan-properties=clangFlags.ios_arm64=-fmodules -fbuiltin -D_ANSI_SOURCE",
-                "-Xoverride-konan-properties=clangFlags.ios_x64=-fmodules -fbuiltin -D_ANSI_SOURCE",
-                "-Xoverride-konan-properties=clangFlags.ios_simulator_arm64=-fmodules -fbuiltin -D_ANSI_SOURCE"
+                "-Xoverride-konan-properties=clangFlags.apple_sdk=-fmodules -fbuiltin",
+                "-Xcc-options", "-fmodules",
+                "-Xcc-options", "-fbuiltin"
             )
             cinterops.all {
-                compilerOpts("-fmodules", "-fbuiltin", "-D_ANSI_SOURCE", "-fallow-modules-with-warnings")
+                compilerOpts("-fmodules", "-fbuiltin", "-D_DARWIN_C_SOURCE", "-fallow-modules-with-warnings")
             }
         }
     }
