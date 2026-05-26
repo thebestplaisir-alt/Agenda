@@ -38,11 +38,15 @@ workflows:
         script: |
           chmod +x gradlew
           export JAVA_HOME=$(/usr/libexec/java_home -v 17)
-          # On teste la commande exacte que Xcode essaie de lancer
+          
+          # On simule TOUTES les variables que Xcode envoie normalement
           ./gradlew :shared:embedAndSignAppleFrameworkForXcode \
             -PXCODE_CONFIGURATION=Release \
             -PCOCOAPODS=YES \
-            -Psdk=iphoneos \
+            -PSDK_NAME=iphoneos \
+            -PTARGET_BUILD_DIR=$(pwd)/build/ios \
+            -PFRAMEWORKS_FOLDER_PATH=Frameworks \
+            -Pbuiltin_ARCHS=arm64 \
             -Parch=arm64 \
             -Ptarget=iosArm64 \
             --no-daemon
