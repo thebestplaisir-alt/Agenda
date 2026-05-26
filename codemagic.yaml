@@ -85,12 +85,15 @@ workflows:
           export JAVA_HOME=$(/usr/libexec/java_home -v 17)
           export PATH=$JAVA_HOME/bin:$PATH
           
-          # Nettoyage profond avant compilation
-          ./gradlew clean --no-daemon
+          # 1. On s'assure que gradlew est exécutable
+          chmod +x gradlew
           
-          # Xcode appellera automatiquement la tâche :shared:embedAndSignAppleFrameworkForXcode
-          # via le script phase généré par CocoaPods.
+          # 2. Pré-compilation du module Kotlin pour iOS (très important)
+          # Cela permet de voir les erreurs de code Kotlin avant Xcode
+          ./gradlew :shared:assembleRelease --no-daemon
           
+          # 3. Build final avec Xcode
+          # On ajoute l'option pour ignorer les erreurs de scripts utilisateurs si besoin
           xcodebuild build \
             -workspace "$XCODE_WORKSPACE" \
             -scheme "$XCODE_SCHEME" \
