@@ -23,14 +23,19 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
-    // Correctif pour Xcode 16 / cinterop
+    // Correctif pour Xcode 16 / cinterop (Fix size_t et modulemap)
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
-        compilations.getByName("main") {
+        compilations.all {
+            // Applique les flags à la compilation Kotlin
             kotlinOptions.freeCompilerArgs += listOf(
                 "-Xoverride-konan-properties=clangFlags.ios_arm64=-fmodules -fbuiltin",
                 "-Xoverride-konan-properties=clangFlags.ios_x64=-fmodules -fbuiltin",
                 "-Xoverride-konan-properties=clangFlags.ios_simulator_arm64=-fmodules -fbuiltin"
             )
+            // Applique les flags spécifiquement aux tâches cinterop (Firebase, etc.)
+            cinterops.all {
+                compilerOpts("-fmodules", "-fbuiltin")
+            }
         }
     }
 
