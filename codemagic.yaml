@@ -39,7 +39,10 @@ workflows:
           chmod +x gradlew
           export JAVA_HOME=$(/usr/libexec/java_home -v 17)
           
-          # On utilise la tâche autonome qui ne dépend pas de Xcode
+          # Nettoyage profond du cache Kotlin Native pour forcer la ré-indexation avec Xcode 16
+          rm -rf ~/.konan/dependencies
+          
+          # On utilise la tâche autonome
           ./gradlew :shared:podPublishReleaseFramework --no-daemon
 
   ios-workflow:

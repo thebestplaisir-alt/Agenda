@@ -26,15 +26,16 @@ kotlin {
     // Correctif pour Xcode 16 / cinterop (Fix size_t et modulemap)
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
         compilations.all {
-            // Applique les flags à la compilation Kotlin
+            // Applique les flags à la compilation Kotlin et à l'indexer clang
             kotlinOptions.freeCompilerArgs += listOf(
-                "-Xoverride-konan-properties=clangFlags.ios_arm64=-fmodules -fbuiltin",
-                "-Xoverride-konan-properties=clangFlags.ios_x64=-fmodules -fbuiltin",
-                "-Xoverride-konan-properties=clangFlags.ios_simulator_arm64=-fmodules -fbuiltin"
+                "-Xoverride-konan-properties=clangFlags.apple_sdk=-fmodules -fbuiltin -D_ANSI_SOURCE",
+                "-Xoverride-konan-properties=clangFlags.ios_arm64=-fmodules -fbuiltin -D_ANSI_SOURCE",
+                "-Xoverride-konan-properties=clangFlags.ios_x64=-fmodules -fbuiltin -D_ANSI_SOURCE",
+                "-Xoverride-konan-properties=clangFlags.ios_simulator_arm64=-fmodules -fbuiltin -D_ANSI_SOURCE"
             )
-            // Applique les flags spécifiquement aux tâches cinterop (Firebase, etc.)
+            // Applique les flags spécifiquement aux tâches cinterop
             cinterops.all {
-                compilerOpts("-fmodules", "-fbuiltin")
+                compilerOpts("-fmodules", "-fbuiltin", "-D_ANSI_SOURCE")
             }
         }
     }
