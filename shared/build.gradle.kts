@@ -22,19 +22,15 @@ kotlin {
     iosArm64()
 
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
-        val xcode16Flags = "-Xoverride-konan-properties=clangFlags.apple_sdk=-fmodules -fbuiltin -D_DARWIN_C_SOURCE"
-        
         compilations.all {
-            kotlinOptions.freeCompilerArgs += xcode16Flags
+            // Fix pour Xcode 16 cinterop (FirebaseAuth/Firestore)
             cinterops.all {
                 compilerOpts("-fmodules", "-fbuiltin", "-D_DARWIN_C_SOURCE")
             }
         }
         
         binaries.all {
-            freeCompilerArgs += xcode16Flags
-            // On force le Linker classique de Xcode pour éviter les bugs de Xcode 16
-            linkerOpts("-Xlinker", "-ld64")
+            // On aide le linker avec les bibliothèques Firebase
             linkerOpts("-Xlinker", "-no_warn_duplicate_libraries")
         }
     }
