@@ -60,11 +60,12 @@ workflows:
           cd iosApp
           xcodegen generate
           
-          # Création du fichier d'environnement pour Xcode (Fix pour Java et Gradle)
-          echo "export JAVA_HOME=$(/usr/libexec/java_home -v 17)" > .xcode.env
+          # Création du fichier d'environnement pour Xcode dans les deux emplacements possibles
+          JAVA_PATH=$(/usr/libexec/java_home -v 17)
+          echo "export JAVA_HOME=$JAVA_PATH" > .xcode.env
           echo "export PATH=\$JAVA_HOME/bin:\$PATH" >> .xcode.env
-          echo "Xcode environment file created:"
-          cat .xcode.env
+          cp .xcode.env ../.xcode.env
+          echo "Xcode environment file created and copied to root."
       - name: Install CocoaPods
         script: |
           chmod +x gradlew
