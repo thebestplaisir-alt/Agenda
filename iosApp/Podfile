@@ -14,25 +14,10 @@ target 'iosApp' do
     end
 
     installer.pods_project.targets.each do |target|
-      # On injecte Java et on corrige le chemin vers gradlew
+      # Injection systématique de JAVA_HOME pour tous les scripts Gradle
       target.build_phases.each do |phase|
         if phase.respond_to?(:shell_script) && phase.shell_script.include?('gradlew')
-          # On s'assure que le script peut trouver gradlew même s'il est lancé depuis iosApp/
-          # et on injecte JAVA_HOME
-          custom_script = <<~SH
-            export JAVA_HOME="#{java_path}"
-            export PATH="$JAVA_HOME/bin:$PATH"
-            if [ -f "./gradlew" ]; then
-                GRADLE_PATH="./gradlew"
-            elif [ -f "../gradlew" ]; then
-                GRADLE_PATH="../gradlew"
-            else
-                GRADLE_PATH="gradlew"
-            fi
-            # Remplacement de ./gradlew par le bon chemin dans le script original
-            #{phase.shell_script.gsub('./gradlew', '$GRADLE_PATH')}
-          SH
-          phase.shell_script = custom_script
+          phase.shell_script = "export JAVA_HOME='#{java_path}'\nexport PATH=\"$JAVA_HOME/bin:$PATH\"\n" + phase.shell_script
         end
       end
 
