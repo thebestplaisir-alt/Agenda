@@ -8,9 +8,9 @@ target 'iosApp' do
 
   post_install do |installer|
     # On récupère le chemin Java de manière plus robuste
-    java_path = `/usr/libexec/java_home -v 17 2>/dev/null || echo $JAVA_HOME_17_X64`.strip
+    java_path = `/usr/libexec/java_home -v 17 2>/dev/null || echo $JAVA_HOME`.strip
     if java_path.empty?
-      java_path = `/usr/libexec/java_home -v 17`.strip rescue "/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home"
+      java_path = "/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home"
     end
 
     installer.pods_project.targets.each do |target|
