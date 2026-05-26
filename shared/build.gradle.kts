@@ -23,6 +23,17 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
+    // Correctif pour Xcode 16 / cinterop
+    targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
+        compilations.getByName("main") {
+            kotlinOptions.freeCompilerArgs += listOf(
+                "-Xoverride-konan-properties=clangFlags.ios_arm64=-fmodules -fbuiltin",
+                "-Xoverride-konan-properties=clangFlags.ios_x64=-fmodules -fbuiltin",
+                "-Xoverride-konan-properties=clangFlags.ios_simulator_arm64=-fmodules -fbuiltin"
+            )
+        }
+    }
+
     cocoapods {
         summary = "Shared module for Agenda"
         homepage = "https://github.com/inchios/agenda"
@@ -31,14 +42,12 @@ kotlin {
         framework {
             baseName = "shared"
             isStatic = true
-            // LIEN STATIQUE ET FIX XCODE 16
             linkerOpts("-ObjC")
         }
         pod("FirebaseCore") { version = "11.8.0" }
         pod("FirebaseAuth") { version = "11.8.0" }
         pod("FirebaseFirestore") { version = "11.8.0" }
         
-        // CORRECTIFS XCODE 16
         extraSpecAttributes["pod_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO', 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.inchios.agenda.shared', 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES' }"
         extraSpecAttributes["user_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO' }"
     }
