@@ -31,7 +31,7 @@ kotlin {
                 "-Xcc-options", "-fbuiltin"
             )
             cinterops.all {
-                compilerOpts("-fmodules", "-fbuiltin", "-D_DARWIN_C_SOURCE", "-fallow-modules-with-warnings")
+                compilerOpts("-fmodules", "-fbuiltin", "-D_DARWIN_C_SOURCE")
             }
         }
     }
