@@ -1,7 +1,8 @@
 platform :ios, '16.0'
 
 target 'iosApp' do
-  use_frameworks! :linkage => :static
+  # On retire le linkage statique forcé pour laisser Kotlin décider
+  use_frameworks!
 
   # Le module shared tirera Firebase 11.8.0
   pod 'shared', :path => '../shared'
