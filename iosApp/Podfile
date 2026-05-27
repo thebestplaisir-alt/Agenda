@@ -1,24 +1,23 @@
 platform :ios, '16.0'
 
 target 'iosApp' do
-  # Linkage statique obligatoire pour la stabilité de Firebase Firestore sur Xcode 16
   use_frameworks! :linkage => :static
 
   # Le module shared tirera Firebase 11.8.0
   pod 'shared', :path => '../shared'
 
+  # On force l'inclusion d'abseil pour éviter les symboles manquants sur Xcode 16
+  pod 'abseil', :modular_headers => true
+
   post_install do |installer|
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |config|
-        # Désactivation du Sandboxing (Crucial pour Xcode 16)
         config.build_settings['ENABLE_USER_SCRIPT_SANDBOXING'] = 'NO'
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
         config.build_settings['CLANG_SERIALIZE_DIAGNOSTICS'] = 'NO'
+        config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
 
-        # Force le standard C++ pour éviter les symboles manquants dans Abseil/Firestore
-        config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'gnu++17'
-
-        # Nettoyage des flags -G (Version sécurisée)
+        # Nettoyage des flags -G
         ['OTHER_CFLAGS', 'OTHER_CPLUSPLUSFLAGS', 'OTHER_LDFLAGS', 'OTHER_SWIFT_FLAGS'].each do |key|
           value = config.build_settings[key]
           if value
@@ -32,13 +31,12 @@ target 'iosApp' do
           end
         end
 
-        # Correctifs pour les dépendances Firebase/Google
-        if target.name.include?('BoringSSL-GRPC') || target.name.include?('gRPC') || target.name.include?('FirebaseFirestore') || target.name.include?('abseil')
+        # Correction spécifique pour Firestore Internal et Abseil
+        if target.name.include?('FirebaseFirestore') || target.name.include?('abseil')
           config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
           config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'GRPC_BAZEL_BUILD=1'
-          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'OPENSSL_NO_ASM=1'
-          config.build_settings['USE_HEADER_MAP'] = 'NO'
-          config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
+          # On force le standard C++ 17 pour tout le monde
+          config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
         end
       end
     end

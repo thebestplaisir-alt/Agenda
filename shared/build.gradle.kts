@@ -32,6 +32,8 @@ kotlin {
         binaries.all {
             // On aide le linker avec les bibliothèques Firebase
             linkerOpts("-Xlinker", "-no_warn_duplicate_libraries")
+            // Ajout de la bibliothèque standard C++ (Crucial pour Firestore)
+            linkerOpts("-lc++")
         }
     }
 
@@ -42,7 +44,7 @@ kotlin {
         ios.deploymentTarget = "16.0"
         framework {
             baseName = "shared"
-            isStatic = true // RETOUR AU STATIQUE POUR LA STABILITÉ (GITHUB PRO OK)
+            isStatic = true
             linkerOpts("-ObjC")
         }
         pod("FirebaseCore") { version = "11.8.0" }
