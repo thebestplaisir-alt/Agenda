@@ -28,26 +28,35 @@ jobs:
           brew install xcodegen
           cd iosApp
           xcodegen generate
+          
+          ln -sf ../gradlew gradlew
+          chmod +x ../gradlew
+          echo "export JAVA_HOME=$JAVA_HOME" > .xcode.env.local
+          echo "export PATH=$JAVA_HOME/bin:$PATH" >> .xcode.env.local
 
       - name: Build Kotlin Module (Manual)
         run: |
           chmod +x gradlew
-          # On compile le framework de manière autonome pour iOS Arm64
-          ./gradlew :shared:podPublishReleaseFramework --no-daemon
+          # Capture complète du log pour débusquer cinterop
+          if ! ./gradlew :shared:podPublishReleaseFramework --info --no-daemon > build_log.txt 2>&1; then
+              echo "------------------------------------------"
+              echo "ERREUR DÉTAILLÉE DE COMPILATION KOTLIN :"
+              echo "------------------------------------------"
+              cat build_log.txt
+              exit 1
+          fi
 
       - name: Install CocoaPods
         run: |
           cd iosApp
           pod install --repo-update
           
-          # Nettoyage des flags de compilation incompatibles
           find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/-G //g' {} +
           find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/ -G//g' {} +
           find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/--serialize-diagnostics//g' {} +
 
       - name: Build iOS App (Xcode)
         run: |
-          # Xcode n'appellera pas Gradle car nous avons mis :skip_user_script_phases
           xcodebuild build \
             -workspace iosApp/iosApp.xcworkspace \
             -scheme iosApp \
