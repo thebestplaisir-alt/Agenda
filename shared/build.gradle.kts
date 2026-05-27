@@ -23,6 +23,15 @@ kotlin {
 
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
         compilations.all {
+            // Fix Xcode 16 : Syntaxe moderne pour Kotlin 2.1.0
+            compileTaskProvider.configure {
+                compilerOptions {
+                    freeCompilerArgs.addAll(
+                        "-Xoverride-konan-properties", "clangFlags.apple_sdk=-fmodules -fbuiltin -D_DARWIN_C_SOURCE"
+                    )
+                }
+            }
+            
             cinterops.all {
                 // Flags pour l'outil cinterop (Lien Firebase) sur Xcode 16
                 compilerOpts("-fmodules", "-fbuiltin", "-D_DARWIN_C_SOURCE")
@@ -43,7 +52,6 @@ kotlin {
         framework {
             baseName = "shared"
             isStatic = true
-            linkerOpts("-ObjC")
         }
         pod("FirebaseCore") { version = "11.8.0" }
         pod("FirebaseAuth") { version = "11.8.0" }

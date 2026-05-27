@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     name: Build iOS App
-    runs-on: macos-15
+    runs-on: macos-14 # Passage sur la version stable (Sonoma)
     
     steps:
       - name: Checkout project
@@ -19,7 +19,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: 'gradle'
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
@@ -33,15 +32,12 @@ jobs:
           ln -sf ../gradlew gradlew
           chmod +x ../gradlew
 
-      - name: Prepare Kotlin Framework for CocoaPods
+      - name: Build Kotlin Module (Manual)
         env:
-          JAVA_HOME: ${{ env.JAVA_HOME_17_X64 }} # Force Java 17
+          JAVA_HOME: ${{ env.JAVA_HOME_17_X64 }}
         run: |
           chmod +x gradlew
-          # 1. On génère le framework factice pour CocoaPods
-          ./gradlew :shared:generateDummyFramework --no-daemon
-          
-          # 2. On génère le VRAI framework avec capture de log
+          # On compile le framework manuellement avec capture de log
           if ! ./gradlew :shared:podPublishReleaseFramework --info --no-daemon > build_log.txt 2>&1; then
               echo "------------------------------------------"
               echo "ERREUR DÉTAILLÉE DE COMPILATION KOTLIN :"
