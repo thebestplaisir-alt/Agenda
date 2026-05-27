@@ -23,21 +23,13 @@ kotlin {
 
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
         compilations.all {
-            // Flags pour le compilateur Kotlin lui-même
-            kotlinOptions.freeCompilerArgs += listOf(
-                "-Xoverride-konan-properties=clangFlags.apple_sdk=-fmodules -fbuiltin -D_DARWIN_C_SOURCE",
-                "-Xcc-options", "-fmodules",
-                "-Xcc-options", "-fbuiltin"
-            )
-            
             cinterops.all {
-                // Flags pour l'outil cinterop (Lien Firebase)
                 compilerOpts("-fmodules", "-fbuiltin", "-D_DARWIN_C_SOURCE")
             }
         }
         
         binaries.all {
-            linkerOpts("-Xlinker", "-no_warn_duplicate_libraries", "-lc++", "-Xlinker", "-ld64")
+            linkerOpts("-Xlinker", "-no_warn_duplicate_libraries", "-lc++")
         }
     }
 
@@ -49,7 +41,6 @@ kotlin {
         framework {
             baseName = "shared"
             isStatic = true
-            linkerOpts("-ObjC")
         }
         pod("FirebaseCore") { version = "11.8.0" }
         pod("FirebaseAuth") { version = "11.8.0" }
@@ -76,13 +67,6 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
     }
-}
-
-// Correctif pour forcer les flags sur TOUTES les tâches d'interopérabilité (Firebase)
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.CInteropProcess>().configureEach {
-    settings.compilerOpts.add("-fmodules")
-    settings.compilerOpts.add("-fbuiltin")
-    settings.compilerOpts.add("-D_DARWIN_C_SOURCE")
 }
 
 android {

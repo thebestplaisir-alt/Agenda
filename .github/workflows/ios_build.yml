@@ -31,26 +31,19 @@ jobs:
           
           ln -sf ../gradlew gradlew
           chmod +x ../gradlew
-          echo "export JAVA_HOME=$JAVA_HOME" > .xcode.env.local
-          echo "export PATH=$JAVA_HOME/bin:$PATH" >> .xcode.env.local
 
-      - name: Build Kotlin Module (Manual)
+      - name: Build Kotlin Module
         run: |
           chmod +x gradlew
-          # Capture complète du log pour débusquer cinterop
-          if ! ./gradlew :shared:podPublishReleaseFramework --info --no-daemon > build_log.txt 2>&1; then
-              echo "------------------------------------------"
-              echo "ERREUR DÉTAILLÉE DE COMPILATION KOTLIN :"
-              echo "------------------------------------------"
-              cat build_log.txt
-              exit 1
-          fi
+          # Utilisation de assembleRelease qui a mieux fonctionné précédemment
+          ./gradlew :shared:assembleRelease --no-daemon
 
       - name: Install CocoaPods
         run: |
           cd iosApp
           pod install --repo-update
           
+          # Nettoyage sécurisé
           find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/-G //g' {} +
           find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/ -G//g' {} +
           find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/--serialize-diagnostics//g' {} +
