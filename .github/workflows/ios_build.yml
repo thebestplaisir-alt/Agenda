@@ -32,24 +32,29 @@ jobs:
           ln -sf ../gradlew gradlew
           chmod +x ../gradlew
 
-      - name: Build Kotlin Module
+      - name: Prepare Kotlin Framework for CocoaPods
         run: |
           chmod +x gradlew
-          # Utilisation de assembleRelease qui a mieux fonctionné précédemment
-          ./gradlew :shared:assembleRelease --no-daemon
+          # 1. On génère le framework factice pour que 'pod install' accepte de s'exécuter
+          ./gradlew :shared:generateDummyFramework --no-daemon
+          
+          # 2. On génère le VRAI framework pour iOS Arm64 manuellement
+          ./gradlew :shared:podPublishReleaseFramework --no-daemon
 
       - name: Install CocoaPods
         run: |
           cd iosApp
+          # On installe les Pods. Le script phase 'Build shared' sera ignoré (grâce au Podfile)
           pod install --repo-update
           
-          # Nettoyage sécurisé
+          # Nettoyage des flags de compilation incompatibles Xcode 16
           find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/-G //g' {} +
           find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/ -G//g' {} +
           find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/--serialize-diagnostics//g' {} +
 
       - name: Build iOS App (Xcode)
         run: |
+          # Build final. Xcode utilisera le framework déjà compilé par Gradle
           xcodebuild build \
             -workspace iosApp/iosApp.xcworkspace \
             -scheme iosApp \
