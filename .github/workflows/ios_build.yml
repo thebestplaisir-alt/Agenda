@@ -28,32 +28,32 @@ jobs:
           brew install xcodegen
           cd iosApp
           xcodegen generate
-          
-          # Fix pour Xcode 16 : Lien vers gradlew et environnement Java
-          ln -sf ../gradlew gradlew
-          chmod +x ../gradlew
-          echo "export JAVA_HOME=$JAVA_HOME" > .xcode.env.local
-          echo "export PATH=$JAVA_HOME/bin:$PATH" >> .xcode.env.local
+
+      - name: Build Kotlin Module (Manual)
+        run: |
+          chmod +x gradlew
+          # On compile le framework pour iOS Arm64 AVANT Xcode
+          ./gradlew :shared:embedAndSignAppleFrameworkForXcode \
+            -PXCODE_CONFIGURATION=Release \
+            -Psdk=iphoneos \
+            -Parch=arm64 \
+            -Ptarget=iosArm64 \
+            -PCOCOAPODS=YES \
+            --no-daemon
 
       - name: Install CocoaPods
         run: |
-          # Pré-compilation Kotlin pour préparer les en-têtes
-          ./gradlew :shared:generateDummyFramework --no-daemon
           cd iosApp
-          pod install
+          pod install --repo-update
           
           # Nettoyage des flags de compilation incompatibles
           find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/-G //g' {} +
           find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/ -G//g' {} +
           find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/--serialize-diagnostics//g' {} +
 
-      - name: Build Shared Module
-        run: |
-          # On compile le module Kotlin séparément pour voir les erreurs clairement
-          ./gradlew :shared:assembleRelease --no-daemon
-
       - name: Build iOS App (Xcode)
         run: |
+          # Xcode n'appellera pas Gradle car nous avons mis :skip_user_script_phases
           xcodebuild build \
             -workspace iosApp/iosApp.xcworkspace \
             -scheme iosApp \

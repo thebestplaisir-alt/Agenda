@@ -1,5 +1,8 @@
 platform :ios, '16.0'
 
+# Désactive les scripts utilisateur de CocoaPods pour éviter l'erreur 65
+install! 'cocoapods', :skip_user_script_phases => true
+
 target 'iosApp' do
   use_frameworks! :linkage => :static
 
@@ -31,11 +34,10 @@ target 'iosApp' do
           end
         end
 
-        # Correction spécifique pour Firestore Internal et Abseil
+        # Correction Firestore / C++
         if target.name.include?('FirebaseFirestore') || target.name.include?('abseil')
           config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
           config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'GRPC_BAZEL_BUILD=1'
-          # On force le standard C++ 17 pour tout le monde
           config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
         end
       end
