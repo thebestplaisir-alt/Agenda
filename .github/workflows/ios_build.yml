@@ -27,53 +27,44 @@ jobs:
         run: |
           brew install xcodegen
           cd iosApp
-          # Nettoyage profond
-          rm -rf iosApp.xcodeproj iosApp.xcworkspace
           xcodegen generate
+          
+          # Fix pour Xcode 16 : Lien vers gradlew et environnement Java
+          ln -sf ../gradlew gradlew
+          chmod +x ../gradlew
+          echo "export JAVA_HOME=$JAVA_HOME" > .xcode.env.local
+          echo "export PATH=$JAVA_HOME/bin:$PATH" >> .xcode.env.local
 
       - name: Install CocoaPods
         run: |
-          chmod +x gradlew
+          # Pré-compilation Kotlin pour préparer les en-têtes
           ./gradlew :shared:generateDummyFramework --no-daemon
           cd iosApp
           pod install
-
-      - name: Clean and Debug unsupported flags -G
-        run: |
-          cd iosApp
-          echo "Cleaning -G flag and serialize-diagnostics from Pods configurations..."
-          # Nettoyage sécurisé (ne touche pas à BoringSSL-GRPC)
-          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/[[:<:]]-G[[:>:]]//g' {} +
-          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/--serialize-diagnostics//g' {} +
           
-          echo "Final verification of remaining -G flags:"
-          grep -r -- '-G' Pods || echo "Plus de flag '-G' trouvé dans Pods."
+          # Nettoyage des flags de compilation incompatibles
+          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/-G //g' {} +
+          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/ -G//g' {} +
+          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/--serialize-diagnostics//g' {} +
 
-      - name: List Schemes
+      - name: Build Shared Module
         run: |
-          cd iosApp
-          xcodebuild -workspace iosApp.xcworkspace -list
+          # On compile le module Kotlin séparément pour voir les erreurs clairement
+          ./gradlew :shared:assembleRelease --no-daemon
 
-      - name: Pre-build flag check
+      - name: Build iOS App (Xcode)
         run: |
-          cd iosApp
-          grep -r -- '-G' Pods || echo "Aucun flag -G trouvé 👍"
-
-      - name: Build iOS App
-        run: |
-          # Build final avec Xcode 16 (macos-15)
           xcodebuild build \
             -workspace iosApp/iosApp.xcworkspace \
             -scheme iosApp \
             -configuration Release \
             -destination 'generic/platform=iOS' \
-            -allowProvisioningUpdates \
-            COMPILER_INDEX_STORE_ENABLE=NO \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGNING_ALLOWED=NO \
+            ENABLE_USER_SCRIPT_SANDBOXING=NO
 
-      - name: Show DerivedData logs on failure
+      - name: Show logs on failure
         if: failure()
         run: |
           echo "Dumping build logs for debugging..."
