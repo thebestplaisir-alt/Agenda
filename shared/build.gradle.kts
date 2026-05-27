@@ -23,17 +23,14 @@ kotlin {
 
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
         compilations.all {
-            // Fix pour Xcode 16 cinterop (FirebaseAuth/Firestore)
             cinterops.all {
+                // On garde un minimum de flags ici
                 compilerOpts("-fmodules", "-fbuiltin", "-D_DARWIN_C_SOURCE")
             }
         }
         
         binaries.all {
-            // On aide le linker avec les bibliothèques Firebase
-            linkerOpts("-Xlinker", "-no_warn_duplicate_libraries")
-            // Ajout de la bibliothèque standard C++ (Crucial pour Firestore)
-            linkerOpts("-lc++")
+            linkerOpts("-Xlinker", "-no_warn_duplicate_libraries", "-lc++")
         }
     }
 
