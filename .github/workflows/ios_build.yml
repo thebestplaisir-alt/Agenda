@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     name: Build iOS App
-    runs-on: macos-14 # Passage sur la version stable (Sonoma)
+    runs-on: macos-15
     
     steps:
       - name: Checkout project
@@ -19,6 +19,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: 'gradle'
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
@@ -38,6 +39,8 @@ jobs:
         run: |
           chmod +x gradlew
           # On compile le framework manuellement avec capture de log
+          # On génère Dummy pour CocoaPods, puis le vrai framework
+          ./gradlew :shared:generateDummyFramework --no-daemon
           if ! ./gradlew :shared:podPublishReleaseFramework --info --no-daemon > build_log.txt 2>&1; then
               echo "------------------------------------------"
               echo "ERREUR DÉTAILLÉE DE COMPILATION KOTLIN :"
@@ -58,6 +61,7 @@ jobs:
 
       - name: Build iOS App (Xcode)
         run: |
+          # Build final. Xcode utilisera le framework déjà compilé par Gradle
           xcodebuild build \
             -workspace iosApp/iosApp.xcworkspace \
             -scheme iosApp \
