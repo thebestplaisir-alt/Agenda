@@ -1,8 +1,8 @@
 platform :ios, '16.0'
 
 target 'iosApp' do
-  # On retire le linkage statique forcé pour laisser Kotlin décider
-  use_frameworks!
+  # Linkage statique obligatoire pour la stabilité de Firebase Firestore sur Xcode 16
+  use_frameworks! :linkage => :static
 
   # Le module shared tirera Firebase 11.8.0
   pod 'shared', :path => '../shared'
@@ -13,8 +13,10 @@ target 'iosApp' do
         # Désactivation du Sandboxing (Crucial pour Xcode 16)
         config.build_settings['ENABLE_USER_SCRIPT_SANDBOXING'] = 'NO'
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
-        config.build_settings['DEBUG_INFORMATION_FORMAT'] = 'dwarf'
         config.build_settings['CLANG_SERIALIZE_DIAGNOSTICS'] = 'NO'
+
+        # Force le standard C++ pour éviter les symboles manquants dans Abseil/Firestore
+        config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'gnu++17'
 
         # Nettoyage des flags -G (Version sécurisée)
         ['OTHER_CFLAGS', 'OTHER_CPLUSPLUSFLAGS', 'OTHER_LDFLAGS', 'OTHER_SWIFT_FLAGS'].each do |key|
@@ -37,10 +39,6 @@ target 'iosApp' do
           config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'OPENSSL_NO_ASM=1'
           config.build_settings['USE_HEADER_MAP'] = 'NO'
           config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
-
-          if target.name.include?('abseil') || target.name.include?('gRPC')
-            config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
-          end
         end
       end
     end

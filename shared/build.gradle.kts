@@ -42,7 +42,7 @@ kotlin {
         ios.deploymentTarget = "16.0"
         framework {
             baseName = "shared"
-            isStatic = false // PASSAGE EN DYNAMIQUE POUR SAUVER LA RAM
+            isStatic = true // RETOUR AU STATIQUE POUR LA STABILITÉ (GITHUB PRO OK)
             linkerOpts("-ObjC")
         }
         pod("FirebaseCore") { version = "11.8.0" }
