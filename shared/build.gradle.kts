@@ -24,12 +24,14 @@ kotlin {
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
         compilations.all {
             cinterops.all {
+                // Flags pour l'outil cinterop (Lien Firebase) sur Xcode 16
                 compilerOpts("-fmodules", "-fbuiltin", "-D_DARWIN_C_SOURCE")
             }
         }
         
         binaries.all {
-            linkerOpts("-Xlinker", "-no_warn_duplicate_libraries", "-lc++")
+            // Fix Linker Xcode 16
+            linkerOpts("-Xlinker", "-no_warn_duplicate_libraries", "-lc++", "-Xlinker", "-ld64")
         }
     }
 
@@ -41,6 +43,7 @@ kotlin {
         framework {
             baseName = "shared"
             isStatic = true
+            linkerOpts("-ObjC")
         }
         pod("FirebaseCore") { version = "11.8.0" }
         pod("FirebaseAuth") { version = "11.8.0" }

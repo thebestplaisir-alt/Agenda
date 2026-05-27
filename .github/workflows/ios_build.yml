@@ -19,6 +19,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: 'gradle'
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
@@ -33,28 +34,34 @@ jobs:
           chmod +x ../gradlew
 
       - name: Prepare Kotlin Framework for CocoaPods
+        env:
+          JAVA_HOME: ${{ env.JAVA_HOME_17_X64 }} # Force Java 17
         run: |
           chmod +x gradlew
-          # 1. On génère le framework factice pour que 'pod install' accepte de s'exécuter
+          # 1. On génère le framework factice pour CocoaPods
           ./gradlew :shared:generateDummyFramework --no-daemon
           
-          # 2. On génère le VRAI framework pour iOS Arm64 manuellement
-          ./gradlew :shared:podPublishReleaseFramework --no-daemon
+          # 2. On génère le VRAI framework avec capture de log
+          if ! ./gradlew :shared:podPublishReleaseFramework --info --no-daemon > build_log.txt 2>&1; then
+              echo "------------------------------------------"
+              echo "ERREUR DÉTAILLÉE DE COMPILATION KOTLIN :"
+              echo "------------------------------------------"
+              cat build_log.txt
+              exit 1
+          fi
 
       - name: Install CocoaPods
         run: |
           cd iosApp
-          # On installe les Pods. Le script phase 'Build shared' sera ignoré (grâce au Podfile)
           pod install --repo-update
           
-          # Nettoyage des flags de compilation incompatibles Xcode 16
+          # Nettoyage des flags Xcode 16
           find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/-G //g' {} +
           find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/ -G//g' {} +
           find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/--serialize-diagnostics//g' {} +
 
       - name: Build iOS App (Xcode)
         run: |
-          # Build final. Xcode utilisera le framework déjà compilé par Gradle
           xcodebuild build \
             -workspace iosApp/iosApp.xcworkspace \
             -scheme iosApp \
