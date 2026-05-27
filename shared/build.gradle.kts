@@ -22,19 +22,20 @@ kotlin {
     iosArm64()
 
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
-        compilations.all {
+        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+        compilerOptions {
             // Fix Xcode 16 : Syntaxe moderne pour Kotlin 2.1.0
-            compileTaskProvider.configure {
-                compilerOptions {
-                    freeCompilerArgs.addAll(
-                        "-Xoverride-konan-properties", "clangFlags.apple_sdk=-fmodules -fbuiltin -D_DARWIN_C_SOURCE"
-                    )
-                }
-            }
-            
-            cinterops.all {
+            freeCompilerArgs.addAll(
+                "-Xoverride-konan-properties",
+                "clangFlags.apple_sdk=-fmodules -fbuiltin -D_DARWIN_C_SOURCE"
+            )
+        }
+
+        compilations.configureEach {
+            cinterops.configureEach {
                 // Flags pour l'outil cinterop (Lien Firebase) sur Xcode 16
                 compilerOpts("-fmodules", "-fbuiltin", "-D_DARWIN_C_SOURCE")
+                extraOpts("-Xcc-fmodules", "-Xcc-fbuiltin")
             }
         }
         
@@ -49,6 +50,7 @@ kotlin {
         homepage = "https://github.com/inchios/agenda"
         version = "1.0"
         ios.deploymentTarget = "16.0"
+        
         framework {
             baseName = "shared"
             isStatic = true
