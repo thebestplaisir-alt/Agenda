@@ -32,14 +32,8 @@ jobs:
       - name: Build Kotlin Module (Manual)
         run: |
           chmod +x gradlew
-          # On compile le framework pour iOS Arm64 AVANT Xcode
-          ./gradlew :shared:embedAndSignAppleFrameworkForXcode \
-            -PXCODE_CONFIGURATION=Release \
-            -Psdk=iphoneos \
-            -Parch=arm64 \
-            -Ptarget=iosArm64 \
-            -PCOCOAPODS=YES \
-            --no-daemon
+          # On compile le framework de manière autonome pour iOS Arm64
+          ./gradlew :shared:podPublishReleaseFramework --no-daemon
 
       - name: Install CocoaPods
         run: |
