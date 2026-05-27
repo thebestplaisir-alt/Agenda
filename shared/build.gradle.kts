@@ -33,15 +33,15 @@ kotlin {
 
         compilations.configureEach {
             cinterops.configureEach {
-                // Flags pour l'outil cinterop (Lien Firebase) sur Xcode 16
+                // Flags critiques pour Xcode 16 et Firebase 11
                 compilerOpts("-fmodules", "-fbuiltin", "-D_DARWIN_C_SOURCE")
-                extraOpts("-Xcc-fmodules", "-Xcc-fbuiltin")
+                extraOpts("-Xcc", "-fmodules", "-Xcc", "-fbuiltin", "-Xcc", "-D_DARWIN_C_SOURCE", "-Xcc", "-Wno-error=non-modular-include-in-framework-module")
             }
         }
         
         binaries.all {
-            // Fix Linker Xcode 16
-            linkerOpts("-Xlinker", "-no_warn_duplicate_libraries", "-lc++", "-Xlinker", "-ld64")
+            // Fix Linker Xcode 16 (on retire -ld64 qui est obsolète)
+            linkerOpts("-Xlinker", "-no_warn_duplicate_libraries", "-lc++")
         }
     }
 
