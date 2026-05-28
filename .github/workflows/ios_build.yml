@@ -32,32 +32,20 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-konan-
 
-      - name: Generate Xcode Project
-        run: |
-          brew install xcodegen
-          cd iosApp
-          xcodegen generate
-          
-      - name: Build Kotlin Module (Manual)
+      - name: Build Kotlin Module
         run: |
           chmod +x gradlew
-          # On limite la mémoire pour éviter les crashs sur le runner GitHub
-          export GRADLE_OPTS="-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.workers.max=2"
-          
-          # On génère le framework factice
-          ./gradlew :shared:generateDummyFramework --no-daemon
-          
-          # On compile le framework pour iOS
-          ./gradlew :shared:linkReleaseFrameworkIosArm64 --no-daemon
+          # On génère le framework complet pour CocoaPods
+          # Cela inclut la compilation native et les ressources Compose
+          ./gradlew :shared:podPublishReleaseFramework --no-daemon -Pkotlin.native.cacheKind=none
 
       - name: Install CocoaPods
         run: |
           cd iosApp
           pod install --repo-update
           
-          # Nettoyage des flags Xcode 16
+          # Nettoyage des flags pour Xcode 16 (nécessaire pour certaines libs Firebase)
           find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/-G //g' {} +
-          find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/ -G//g' {} +
           find Pods -name "*.xcconfig" -type f -exec sed -i '' 's/--serialize-diagnostics//g' {} +
 
       - name: Build iOS App (Xcode)
