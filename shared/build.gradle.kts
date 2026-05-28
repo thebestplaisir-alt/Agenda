@@ -32,8 +32,8 @@ kotlin {
 
         compilations.configureEach {
             cinterops.configureEach {
-                // On retire -fmodules ici pour tester la stabilité sans modules Clang durant le bridge
-                compilerOpts("-D_DARWIN_C_SOURCE")
+                // Fix pour Xcode 16+ : on désactive les modules pour le cinterop
+                compilerOpts("-fno-modules", "-D_DARWIN_C_SOURCE")
             }
         }
         
