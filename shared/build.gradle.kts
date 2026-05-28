@@ -27,21 +27,14 @@ kotlin {
             // Fix Xcode 16 : Syntaxe moderne pour Kotlin 2.1.0
             freeCompilerArgs.addAll(
                 "-Xoverride-konan-properties",
-                "clangFlags.apple_sdk=-fmodules -fbuiltin -D_DARWIN_C_SOURCE"
+                "clangFlags.apple_sdk=-fmodules -fbuiltin -D_DARWIN_C_SOURCE -Wno-error=non-modular-include-in-framework-module"
             )
         }
 
         compilations.configureEach {
             cinterops.configureEach {
-                // Flags ultra-permissifs pour Xcode 16.4 + Firebase 11
-                compilerOpts("-fmodules", "-fbuiltin", "-D_DARWIN_C_SOURCE")
-                extraOpts(
-                    "-Xcc", "-fmodules", 
-                    "-Xcc", "-fbuiltin", 
-                    "-Xcc", "-D_DARWIN_C_SOURCE", 
-                    "-Xcc", "-Wno-error=non-modular-include-in-framework-module",
-                    "-Xcc", "-Wno-everything" // Ignore les warnings de syntaxe dans les headers Firebase
-                )
+                // On passe les flags via compilerOpts qui est plus stable que extraOpts dans certains contextes
+                compilerOpts("-fmodules", "-fbuiltin", "-Wno-error=non-modular-include-in-framework-module", "-Wno-everything")
             }
         }
         
@@ -63,10 +56,14 @@ kotlin {
         
         pod("FirebaseCore") { version = "11.8.0" }
         pod("FirebaseCoreInternal") { version = "11.8.0" }
-        pod("FirebaseAuth") { version = "11.8.0" }
+        pod("FirebaseAuth") { 
+            version = "11.8.0"
+            // Magic fix pour le cinterop de Auth sur Xcode 16
+            extraOpts = listOf("-Xcc", "-fmodules", "-Xcc", "-fbuiltin")
+        }
         pod("FirebaseFirestore") { version = "11.8.0" }
         
-        extraSpecAttributes["pod_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO', 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.inchios.agenda.shared', 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES', 'CLANG_ENABLE_MODULES' => 'YES', 'OTHER_CPLUSPLUSFLAGS' => '-fmodules -fcxx-modules' }"
+        extraSpecAttributes["pod_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO', 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.inchios.agenda.shared', 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES', 'CLANG_ENABLE_MODULES' => 'YES' }"
         extraSpecAttributes["user_target_xcconfig"] = "{ 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES', 'CLANG_ENABLE_MODULES' => 'YES' }"
     }
 
