@@ -24,23 +24,30 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
+      - name: Cache Konan dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.konan
+          key: ${{ runner.os }}-konan-${{ hashFiles('**/*.gradle.kts') }}
+          restore-keys: |
+            ${{ runner.os }}-konan-
+
       - name: Generate Xcode Project
         run: |
           brew install xcodegen
           cd iosApp
           xcodegen generate
           
-          ln -sf ../gradlew gradlew
-          chmod +x ../gradlew
-
       - name: Build Kotlin Module (Manual)
         run: |
           chmod +x gradlew
-          # On génère le framework factice pour que CocoaPods puisse s'installer
+          # On limite la mémoire pour éviter les crashs sur le runner GitHub
+          export GRADLE_OPTS="-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.workers.max=2"
+          
+          # On génère le framework factice
           ./gradlew :shared:generateDummyFramework --no-daemon
           
-          # On compile le framework pour iOS Arm64 pour valider le code Kotlin
-          # On ne redirige plus vers un fichier pour voir les erreurs en direct
+          # On compile le framework pour iOS
           ./gradlew :shared:linkReleaseFrameworkIosArm64 --no-daemon
 
       - name: Install CocoaPods
