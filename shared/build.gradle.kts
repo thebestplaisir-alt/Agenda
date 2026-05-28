@@ -32,10 +32,9 @@ kotlin {
 
         compilations.configureEach {
             cinterops.configureEach {
-                // On passe les flags au compilateur C utilisé par cinterop
+                // Flags ultra-compatibles pour Firebase
                 compilerOpts("-fmodules", "-fbuiltin", "-D_DARWIN_C_SOURCE")
-                // On ajoute des arguments spécifiques à l'outil cinterop lui-même
-                extraOpts("-Xcc", "-Wno-error=non-modular-include-in-framework-module", "-Xcc", "-Wno-quoted-include-in-framework-header")
+                extraOpts("-Xcc", "-Wno-error=non-modular-include-in-framework-module", "-Xcc", "-Wno-everything")
             }
         }
         
@@ -52,14 +51,14 @@ kotlin {
         
         framework {
             baseName = "shared"
-            isStatic = false // Framework dynamique pour stabiliser Firebase
+            isStatic = false 
         }
         
         pod("FirebaseCore") { version = "10.24.0" }
         pod("FirebaseAuth") { version = "10.24.0" }
         pod("FirebaseFirestore") { version = "10.24.0" }
         
-        extraSpecAttributes["pod_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO', 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.inchios.agenda.shared', 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES', 'CLANG_ENABLE_MODULES' => 'YES' }"
+        extraSpecAttributes["pod_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO', 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.inchios.agenda.shared', 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES', 'CLANG_ENABLE_MODULES' => 'YES', 'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) GPB_USE_PROTOBUF_FRAMEWORK_IMPORTS=1' }"
         extraSpecAttributes["user_target_xcconfig"] = "{ 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES', 'CLANG_ENABLE_MODULES' => 'YES' }"
     }
 
