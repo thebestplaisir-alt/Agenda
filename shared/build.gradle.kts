@@ -24,7 +24,6 @@ kotlin {
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            // Fix Xcode 16 : Syntaxe moderne pour Kotlin 2.1.0
             freeCompilerArgs.addAll(
                 "-Xoverride-konan-properties",
                 "clangFlags.apple_sdk=-fmodules -fbuiltin -D_DARWIN_C_SOURCE -Wno-error=non-modular-include-in-framework-module -Wno-quoted-include-in-framework-header"
@@ -33,15 +32,10 @@ kotlin {
 
         compilations.configureEach {
             cinterops.configureEach {
-                // Flags ultra-complets pour Xcode 16.4
-                compilerOpts(
-                    "-fmodules", 
-                    "-fbuiltin", 
-                    "-D_DARWIN_C_SOURCE", 
-                    "-Wno-error=non-modular-include-in-framework-module",
-                    "-Wno-quoted-include-in-framework-header",
-                    "-Wno-everything"
-                )
+                // On passe les flags au compilateur C utilisé par cinterop
+                compilerOpts("-fmodules", "-fbuiltin", "-D_DARWIN_C_SOURCE")
+                // On ajoute des arguments spécifiques à l'outil cinterop lui-même
+                extraOpts("-Xcc", "-Wno-error=non-modular-include-in-framework-module", "-Xcc", "-Wno-quoted-include-in-framework-header")
             }
         }
         
@@ -65,8 +59,6 @@ kotlin {
         pod("FirebaseCoreInternal") { version = "11.8.0" }
         pod("FirebaseAuth") { 
             version = "11.8.0"
-            // Injection forcée pour le compilateur C lors de la génération du pont
-            extraOpts = listOf("-Xcc", "-fmodules", "-Xcc", "-fbuiltin", "-Xcc", "-Wno-error=non-modular-include-in-framework-module", "-Xcc", "-Wno-quoted-include-in-framework-header")
         }
         pod("FirebaseFirestore") { version = "11.8.0" }
         
