@@ -33,8 +33,8 @@ kotlin {
 
         compilations.configureEach {
             cinterops.configureEach {
-                // Flags critiques pour Xcode 16 : passage explicite via -Xcc
-                compilerOpts("-Xcc", "-fmodules", "-Xcc", "-fbuiltin", "-Xcc", "-D_DARWIN_C_SOURCE", "-Xcc", "-Wno-error=non-modular-include-in-framework-module")
+                // Flags directs pour le compilateur C de cinterop sur Xcode 16.4
+                compilerOpts("-fmodules", "-fbuiltin", "-D_DARWIN_C_SOURCE", "-Wno-error=non-modular-include-in-framework-module")
             }
         }
         
@@ -49,9 +49,6 @@ kotlin {
         version = "1.0"
         ios.deploymentTarget = "16.0"
         
-        // Force l'utilisation des frameworks dynamiques/bibliothèques pour Firebase sur Xcode 16
-        // useLibraries() // Si cette ligne cause encore une erreur, on la commentera à nouveau.
-        
         framework {
             baseName = "shared"
             isStatic = true
@@ -61,6 +58,7 @@ kotlin {
         pod("FirebaseCoreInternal") { version = "11.8.0" }
         pod("FirebaseAuth") { 
             version = "11.8.0"
+            // On injecte les flags via extraOpts avec -Xcc pour forcer le passage à Clang lors du build du Pod
             extraOpts = listOf("-Xcc", "-fmodules", "-Xcc", "-fbuiltin", "-Xcc", "-Wno-error=non-modular-include-in-framework-module")
         }
         pod("FirebaseFirestore") { version = "11.8.0" }
