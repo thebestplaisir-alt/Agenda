@@ -4,9 +4,9 @@ platform :ios, '16.0'
 install! 'cocoapods', :skip_user_script_phases => true
 
 target 'iosApp' do
-  use_frameworks! :linkage => :static
+  use_frameworks!
 
-  # Le module shared tirera Firebase 11.8.0
+  # Le module shared tirera Firebase 10.24.0
   pod 'shared', :path => '../shared'
 
   post_install do |installer|
