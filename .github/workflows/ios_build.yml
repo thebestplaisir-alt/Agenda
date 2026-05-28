@@ -8,11 +8,14 @@ on:
 jobs:
   build:
     name: Build iOS App
-    runs-on: macos-15
+    runs-on: macos-14
     
     steps:
       - name: Checkout project
         uses: actions/checkout@v4
+
+      - name: Select Xcode 15.4
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4

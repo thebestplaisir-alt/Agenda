@@ -26,13 +26,13 @@ kotlin {
         compilerOptions {
             freeCompilerArgs.addAll(
                 "-Xoverride-konan-properties",
-                "clangFlags.apple_sdk=-D_DARWIN_C_SOURCE -Wno-error=non-modular-include-in-framework-module"
+                "clangFlags.apple_sdk=-D_DARWIN_C_SOURCE -Wno-error=non-modular-include-in-framework-module -fno-modules"
             )
         }
 
         compilations.configureEach {
             cinterops.configureEach {
-                // Fix ultime pour Xcode 16+ : on désactive les modules pour le cinterop
+                // On passe les drapeaux au compilateur C interne (Clang)
                 compilerOpts("-fno-modules", "-Xcc", "-fno-modules")
             }
         }
@@ -53,12 +53,21 @@ kotlin {
             isStatic = true 
         }
         
-        pod("FirebaseCore") { version = "10.24.0" }
-        pod("FirebaseAuth") { version = "10.24.0" }
-        pod("FirebaseFirestore") { version = "10.24.0" }
+        pod("FirebaseCore") { 
+            version = "10.24.0"
+            extraOpts.add("-fno-modules")
+        }
+        pod("FirebaseAuth") { 
+            version = "10.24.0"
+            extraOpts.add("-fno-modules")
+        }
+        pod("FirebaseFirestore") { 
+            version = "10.24.0"
+            extraOpts.add("-fno-modules")
+        }
         
-        extraSpecAttributes["pod_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO', 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.inchios.agenda.shared', 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES', 'CLANG_ENABLE_MODULES' => 'YES' }"
-        extraSpecAttributes["user_target_xcconfig"] = "{ 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES', 'CLANG_ENABLE_MODULES' => 'YES' }"
+        extraSpecAttributes["pod_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO', 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.inchios.agenda.shared', 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES', 'CLANG_ENABLE_MODULES' => 'NO' }"
+        extraSpecAttributes["user_target_xcconfig"] = "{ 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES', 'CLANG_ENABLE_MODULES' => 'NO' }"
     }
 
     sourceSets {
