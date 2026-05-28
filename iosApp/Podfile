@@ -33,10 +33,11 @@ target 'iosApp' do
         end
 
         # Correction Firestore / Abseil / gRPC
-        if target.name.include?('FirebaseFirestore') || target.name.include?('abseil') || target.name.include?('gRPC')
+        if target.name.include?('FirebaseFirestore') || target.name.include?('abseil') || target.name.include?('gRPC') || target.name.include?('FirebaseAuth')
           config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
           config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'GRPC_BAZEL_BUILD=1'
           config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'OPENSSL_NO_ASM=1'
+          config.build_settings['CLANG_ENABLE_MODULES'] = 'NO'
         end
       end
     end

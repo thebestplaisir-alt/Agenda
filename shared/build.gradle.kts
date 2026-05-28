@@ -32,8 +32,8 @@ kotlin {
 
         compilations.configureEach {
             cinterops.configureEach {
-                // Fix pour Xcode 16+ : on désactive les modules pour le cinterop
-                compilerOpts("-fno-modules", "-D_DARWIN_C_SOURCE")
+                // Fix ultime pour Xcode 16+ : on désactive les modules pour le cinterop
+                compilerOpts("-fno-modules")
             }
         }
         
