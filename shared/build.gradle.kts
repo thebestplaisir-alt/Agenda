@@ -26,14 +26,14 @@ kotlin {
         compilerOptions {
             freeCompilerArgs.addAll(
                 "-Xoverride-konan-properties",
-                "clangFlags.apple_sdk=-D_DARWIN_C_SOURCE -Wno-error=non-modular-include-in-framework-module -fno-modules"
+                "clangFlags.apple_sdk=-D_DARWIN_C_SOURCE -Wno-error=non-modular-include-in-framework-module"
             )
         }
 
         compilations.configureEach {
             cinterops.configureEach {
-                // On passe les drapeaux au compilateur C interne (Clang)
-                compilerOpts("-fno-modules", "-Xcc", "-fno-modules")
+                // On laisse les réglages par défaut pour le cinterop global
+                compilerOpts("-D_DARWIN_C_SOURCE")
             }
         }
         
