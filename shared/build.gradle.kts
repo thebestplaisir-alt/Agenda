@@ -27,14 +27,21 @@ kotlin {
             // Fix Xcode 16 : Syntaxe moderne pour Kotlin 2.1.0
             freeCompilerArgs.addAll(
                 "-Xoverride-konan-properties",
-                "clangFlags.apple_sdk=-fmodules -fbuiltin -D_DARWIN_C_SOURCE -Wno-error=non-modular-include-in-framework-module"
+                "clangFlags.apple_sdk=-fmodules -fbuiltin -D_DARWIN_C_SOURCE -Wno-error=non-modular-include-in-framework-module -Wno-quoted-include-in-framework-header"
             )
         }
 
         compilations.configureEach {
             cinterops.configureEach {
-                // Flags directs pour le compilateur C de cinterop sur Xcode 16.4
-                compilerOpts("-fmodules", "-fbuiltin", "-D_DARWIN_C_SOURCE", "-Wno-error=non-modular-include-in-framework-module")
+                // Flags ultra-complets pour Xcode 16.4
+                compilerOpts(
+                    "-fmodules", 
+                    "-fbuiltin", 
+                    "-D_DARWIN_C_SOURCE", 
+                    "-Wno-error=non-modular-include-in-framework-module",
+                    "-Wno-quoted-include-in-framework-header",
+                    "-Wno-everything"
+                )
             }
         }
         
@@ -58,8 +65,8 @@ kotlin {
         pod("FirebaseCoreInternal") { version = "11.8.0" }
         pod("FirebaseAuth") { 
             version = "11.8.0"
-            // On injecte les flags via extraOpts avec -Xcc pour forcer le passage à Clang lors du build du Pod
-            extraOpts = listOf("-Xcc", "-fmodules", "-Xcc", "-fbuiltin", "-Xcc", "-Wno-error=non-modular-include-in-framework-module")
+            // Injection forcée pour le compilateur C lors de la génération du pont
+            extraOpts = listOf("-Xcc", "-fmodules", "-Xcc", "-fbuiltin", "-Xcc", "-Wno-error=non-modular-include-in-framework-module", "-Xcc", "-Wno-quoted-include-in-framework-header")
         }
         pod("FirebaseFirestore") { version = "11.8.0" }
         
