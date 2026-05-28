@@ -35,8 +35,10 @@ jobs:
       - name: Build Kotlin Module
         run: |
           chmod +x gradlew
+          # On force le nettoyage du cinterop pour éviter les résidus Xcode 15/16
+          ./gradlew clean :shared:cinteropFirebaseAuthIosArm64 --no-daemon
+          
           # On génère le framework complet pour CocoaPods
-          # Cela inclut la compilation native et les ressources Compose
           ./gradlew :shared:podPublishReleaseFramework --no-daemon -Pkotlin.native.cacheKind=none
 
       - name: Install CocoaPods
