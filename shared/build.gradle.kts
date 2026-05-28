@@ -33,14 +33,19 @@ kotlin {
 
         compilations.configureEach {
             cinterops.configureEach {
-                // Flags critiques pour Xcode 16 et Firebase 11
+                // Flags ultra-permissifs pour Xcode 16.4 + Firebase 11
                 compilerOpts("-fmodules", "-fbuiltin", "-D_DARWIN_C_SOURCE")
-                extraOpts("-Xcc", "-fmodules", "-Xcc", "-fbuiltin", "-Xcc", "-D_DARWIN_C_SOURCE", "-Xcc", "-Wno-error=non-modular-include-in-framework-module")
+                extraOpts(
+                    "-Xcc", "-fmodules", 
+                    "-Xcc", "-fbuiltin", 
+                    "-Xcc", "-D_DARWIN_C_SOURCE", 
+                    "-Xcc", "-Wno-error=non-modular-include-in-framework-module",
+                    "-Xcc", "-Wno-everything" // Ignore les warnings de syntaxe dans les headers Firebase
+                )
             }
         }
         
         binaries.all {
-            // Fix Linker Xcode 16 (on retire -ld64 qui est obsolète)
             linkerOpts("-Xlinker", "-no_warn_duplicate_libraries", "-lc++")
         }
     }
@@ -56,25 +61,13 @@ kotlin {
             isStatic = true
         }
         
-        pod("FirebaseCore") { 
-            version = "11.8.0"
-            extraOpts = listOf("-Xcc", "-fmodules", "-Xcc", "-Wno-error=non-modular-include-in-framework-module")
-        }
-        pod("FirebaseCoreInternal") { 
-            version = "11.8.0"
-            extraOpts = listOf("-Xcc", "-fmodules", "-Xcc", "-Wno-error=non-modular-include-in-framework-module")
-        }
-        pod("FirebaseAuth") { 
-            version = "11.8.0"
-            extraOpts = listOf("-Xcc", "-fmodules", "-Xcc", "-Wno-error=non-modular-include-in-framework-module")
-        }
-        pod("FirebaseFirestore") { 
-            version = "11.8.0"
-            extraOpts = listOf("-Xcc", "-fmodules", "-Xcc", "-Wno-error=non-modular-include-in-framework-module")
-        }
+        pod("FirebaseCore") { version = "11.8.0" }
+        pod("FirebaseCoreInternal") { version = "11.8.0" }
+        pod("FirebaseAuth") { version = "11.8.0" }
+        pod("FirebaseFirestore") { version = "11.8.0" }
         
-        extraSpecAttributes["pod_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO', 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.inchios.agenda.shared', 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES', 'CLANG_ENABLE_MODULES' => 'YES' }"
-        extraSpecAttributes["user_target_xcconfig"] = "{ 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES' }"
+        extraSpecAttributes["pod_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO', 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.inchios.agenda.shared', 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES', 'CLANG_ENABLE_MODULES' => 'YES', 'OTHER_CPLUSPLUSFLAGS' => '-fmodules -fcxx-modules' }"
+        extraSpecAttributes["user_target_xcconfig"] = "{ 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES', 'CLANG_ENABLE_MODULES' => 'YES' }"
     }
 
     sourceSets {
