@@ -55,15 +55,12 @@ kotlin {
         
         pod("FirebaseCore") { 
             version = "10.24.0"
-            extraOpts.add("-fno-modules")
         }
         pod("FirebaseAuth") { 
             version = "10.24.0"
-            extraOpts.add("-fno-modules")
         }
         pod("FirebaseFirestore") { 
             version = "10.24.0"
-            extraOpts.add("-fno-modules")
         }
         
         extraSpecAttributes["pod_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO', 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.inchios.agenda.shared', 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES', 'CLANG_ENABLE_MODULES' => 'NO' }"
@@ -84,7 +81,7 @@ kotlin {
             implementation(libs.kotlinx.datetime)
         }
         androidMain.dependencies {
-            implementation("androidx.compose.ui:ui-tooling-preview:1.7.8")
+            implementation(libs.androidx.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
         }
     }
