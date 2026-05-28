@@ -14,8 +14,8 @@ jobs:
       - name: Checkout project
         uses: actions/checkout@v4
 
-      - name: Select Xcode 15.4
-        run: sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
+      - name: Select Xcode 16.0
+        run: sudo xcode-select -s /Applications/Xcode_16.0.app/Contents/Developer
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -38,6 +38,7 @@ jobs:
 
       - name: Build Kotlin Module (Manual)
         run: |
+          export JAVA_HOME=$JAVA_HOME_17_ARM64
           chmod +x gradlew
           # On compile le framework manuellement avec capture de log
           # On génère Dummy pour CocoaPods, puis le vrai framework

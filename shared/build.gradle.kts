@@ -26,14 +26,14 @@ kotlin {
         compilerOptions {
             freeCompilerArgs.addAll(
                 "-Xoverride-konan-properties",
-                "clangFlags.apple_sdk=-fmodules -fbuiltin -D_DARWIN_C_SOURCE -Wno-error=non-modular-include-in-framework-module"
+                "clangFlags.apple_sdk=-D_DARWIN_C_SOURCE -Wno-error=non-modular-include-in-framework-module"
             )
         }
 
         compilations.configureEach {
             cinterops.configureEach {
-                compilerOpts("-fmodules", "-fbuiltin")
-                extraOpts("-Xcc", "-Wno-error=non-modular-include-in-framework-module")
+                // On retire -fmodules ici pour tester la stabilité sans modules Clang durant le bridge
+                compilerOpts("-D_DARWIN_C_SOURCE")
             }
         }
         
