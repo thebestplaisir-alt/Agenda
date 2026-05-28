@@ -9,9 +9,9 @@ Pod::Spec.new do |spec|
     spec.vendored_frameworks      = 'build/cocoapods/framework/shared.framework'
     spec.libraries                = 'c++'
     spec.ios.deployment_target    = '16.0'
-    spec.dependency 'FirebaseAuth', '11.8.0'
-    spec.dependency 'FirebaseCore', '11.8.0'
-    spec.dependency 'FirebaseFirestore', '11.8.0'
+    spec.dependency 'FirebaseAuth', '10.24.0'
+    spec.dependency 'FirebaseCore', '10.24.0'
+    spec.dependency 'FirebaseFirestore', '10.24.0'
                 
     if !Dir.exist?('build/cocoapods/framework/shared.framework') || Dir.empty?('build/cocoapods/framework/shared.framework')
         raise "
@@ -49,5 +49,6 @@ Pod::Spec.new do |spec|
         }
     ]
     spec.resources = ['build\compose\cocoapods\compose-resources']
-    spec.pod_target_xcconfig = { 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO', 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.inchios.agenda.shared', 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES' }
+    spec.pod_target_xcconfig = { 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO', 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.inchios.agenda.shared', 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES', 'CLANG_ENABLE_MODULES' => 'YES' }
+    spec.user_target_xcconfig = { 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES', 'CLANG_ENABLE_MODULES' => 'YES' }
 end
