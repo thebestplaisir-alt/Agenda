@@ -33,7 +33,7 @@ kotlin {
         compilations.configureEach {
             cinterops.configureEach {
                 // Fix ultime pour Xcode 16+ : on désactive les modules pour le cinterop
-                compilerOpts("-fno-modules")
+                compilerOpts("-fno-modules", "-Xcc", "-fno-modules")
             }
         }
         
