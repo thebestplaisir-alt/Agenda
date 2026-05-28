@@ -35,18 +35,13 @@ jobs:
 
       - name: Build Kotlin Module (Manual)
         run: |
-          export JAVA_HOME=$JAVA_HOME_17_ARM64
           chmod +x gradlew
-          # On compile le framework manuellement avec capture de log
-          # On génère Dummy pour CocoaPods, puis le vrai framework
+          # On génère le framework factice pour que CocoaPods puisse s'installer
           ./gradlew :shared:generateDummyFramework --no-daemon
-          if ! ./gradlew :shared:podPublishReleaseFramework --info --no-daemon > build_log.txt 2>&1; then
-              echo "------------------------------------------"
-              echo "ERREUR DÉTAILLÉE DE COMPILATION KOTLIN :"
-              echo "------------------------------------------"
-              cat build_log.txt
-              exit 1
-          fi
+          
+          # On compile le framework pour iOS Arm64 pour valider le code Kotlin
+          # On ne redirige plus vers un fichier pour voir les erreurs en direct
+          ./gradlew :shared:linkReleaseFrameworkIosArm64 --no-daemon
 
       - name: Install CocoaPods
         run: |
