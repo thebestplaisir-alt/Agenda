@@ -33,8 +33,8 @@ kotlin {
 
         compilations.configureEach {
             cinterops.configureEach {
-                // On passe les flags via compilerOpts qui est plus stable que extraOpts dans certains contextes
-                compilerOpts("-fmodules", "-fbuiltin", "-Wno-error=non-modular-include-in-framework-module", "-Wno-everything")
+                // Flags critiques pour Xcode 16 : passage explicite via -Xcc
+                compilerOpts("-Xcc", "-fmodules", "-Xcc", "-fbuiltin", "-Xcc", "-D_DARWIN_C_SOURCE", "-Xcc", "-Wno-error=non-modular-include-in-framework-module")
             }
         }
         
@@ -49,6 +49,9 @@ kotlin {
         version = "1.0"
         ios.deploymentTarget = "16.0"
         
+        // Force l'utilisation des frameworks dynamiques/bibliothèques pour Firebase sur Xcode 16
+        // useLibraries() // Si cette ligne cause encore une erreur, on la commentera à nouveau.
+        
         framework {
             baseName = "shared"
             isStatic = true
@@ -58,8 +61,7 @@ kotlin {
         pod("FirebaseCoreInternal") { version = "11.8.0" }
         pod("FirebaseAuth") { 
             version = "11.8.0"
-            // Magic fix pour le cinterop de Auth sur Xcode 16
-            extraOpts = listOf("-Xcc", "-fmodules", "-Xcc", "-fbuiltin")
+            extraOpts = listOf("-Xcc", "-fmodules", "-Xcc", "-fbuiltin", "-Xcc", "-Wno-error=non-modular-include-in-framework-module")
         }
         pod("FirebaseFirestore") { version = "11.8.0" }
         
