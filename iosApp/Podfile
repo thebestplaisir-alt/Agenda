@@ -9,9 +9,6 @@ target 'iosApp' do
   # Le module shared tirera Firebase 11.8.0
   pod 'shared', :path => '../shared'
 
-  # On force l'inclusion d'abseil pour éviter les symboles manquants sur Xcode 16
-  pod 'abseil', :modular_headers => true
-
   post_install do |installer|
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |config|
