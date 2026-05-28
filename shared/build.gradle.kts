@@ -26,15 +26,14 @@ kotlin {
         compilerOptions {
             freeCompilerArgs.addAll(
                 "-Xoverride-konan-properties",
-                "clangFlags.apple_sdk=-fmodules -fbuiltin -D_DARWIN_C_SOURCE -Wno-error=non-modular-include-in-framework-module -Wno-quoted-include-in-framework-header"
+                "clangFlags.apple_sdk=-fmodules -fbuiltin -D_DARWIN_C_SOURCE -Wno-error=non-modular-include-in-framework-module"
             )
         }
 
         compilations.configureEach {
             cinterops.configureEach {
-                // Flags ultra-compatibles pour Firebase
-                compilerOpts("-fmodules", "-fbuiltin", "-D_DARWIN_C_SOURCE")
-                extraOpts("-Xcc", "-Wno-error=non-modular-include-in-framework-module", "-Xcc", "-Wno-everything")
+                compilerOpts("-fmodules", "-fbuiltin")
+                extraOpts("-Xcc", "-Wno-error=non-modular-include-in-framework-module")
             }
         }
         
@@ -51,14 +50,14 @@ kotlin {
         
         framework {
             baseName = "shared"
-            isStatic = false 
+            isStatic = true 
         }
         
         pod("FirebaseCore") { version = "10.24.0" }
         pod("FirebaseAuth") { version = "10.24.0" }
         pod("FirebaseFirestore") { version = "10.24.0" }
         
-        extraSpecAttributes["pod_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO', 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.inchios.agenda.shared', 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES', 'CLANG_ENABLE_MODULES' => 'YES', 'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) GPB_USE_PROTOBUF_FRAMEWORK_IMPORTS=1' }"
+        extraSpecAttributes["pod_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO', 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.inchios.agenda.shared', 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES', 'CLANG_ENABLE_MODULES' => 'YES' }"
         extraSpecAttributes["user_target_xcconfig"] = "{ 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES', 'CLANG_ENABLE_MODULES' => 'YES' }"
     }
 
