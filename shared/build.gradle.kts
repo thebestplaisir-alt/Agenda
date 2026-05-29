@@ -25,8 +25,6 @@ kotlin {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             freeCompilerArgs.addAll(
-                "-Xoverride-konan-properties",
-                "clangFlags.apple_sdk=-D_DARWIN_C_SOURCE -Wno-error=non-modular-include-in-framework-module",
                 "-Xverbose-phases=Linker" // Pour voir l'erreur exacte du linker dans les logs
             )
         }
@@ -38,7 +36,7 @@ kotlin {
         }
         
         binaries.all {
-            linkerOpts("-Xlinker", "-no_warn_duplicate_libraries", "-lc++", "-ObjC")
+            linkerOpts("-Xlinker", "-no_warn_duplicate_libraries", "-lc++", "-ObjC", "-lsqlite3", "-lz")
         }
     }
 
