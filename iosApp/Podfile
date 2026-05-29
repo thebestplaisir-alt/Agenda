@@ -4,8 +4,8 @@ platform :ios, '16.0'
 install! 'cocoapods', :skip_user_script_phases => true
 
 target 'iosApp' do
-  # Utilisation de frameworks dynamiques pour résoudre les conflits de symboles Firebase
-  use_frameworks! :linkage => :dynamic
+  # Retour au lien statique pour Firebase, plus performant
+  use_frameworks! :linkage => :static
   use_modular_headers!
 
   pod 'shared', :path => '../shared'
