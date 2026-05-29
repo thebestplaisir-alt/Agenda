@@ -36,7 +36,7 @@ kotlin {
         }
         
         binaries.all {
-            linkerOpts("-Xlinker", "-no_warn_duplicate_libraries", "-lc++", "-ObjC", "-lsqlite3", "-lz")
+            linkerOpts("-Xlinker", "-no_warn_duplicate_libraries", "-lsqlite3", "-lz")
             freeCompilerArgs += "-Xbinary=bundleId=com.inchios.agenda.shared"
         }
     }
@@ -52,6 +52,7 @@ kotlin {
             isStatic = true
         }
         
+        pod("FirebaseCore") { version = "10.24.0" }
         pod("FirebaseAuth") { version = "10.24.0" }
         pod("FirebaseFirestore") { version = "10.24.0" }
         
