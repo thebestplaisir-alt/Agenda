@@ -50,7 +50,7 @@ kotlin {
         
         framework {
             baseName = "shared"
-            isStatic = false // On passe en dynamique pour éviter les duplications de symboles Firebase
+            isStatic = true
         }
         
         pod("FirebaseCore") { 

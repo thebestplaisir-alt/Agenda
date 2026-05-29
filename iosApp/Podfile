@@ -5,6 +5,10 @@ install! 'cocoapods', :skip_user_script_phases => true
 
 target 'iosApp' do
   use_frameworks!
+  use_modular_headers!
+
+  # On remet le lien vers le module shared
+  pod 'shared', :path => '../shared'
 
   post_install do |installer|
     installer.pods_project.targets.each do |target|
