@@ -48,7 +48,7 @@ kotlin {
         
         framework {
             baseName = "shared"
-            isStatic = true
+            isStatic = false
         }
         
         pod("FirebaseCore") { version = "10.24.0" }
