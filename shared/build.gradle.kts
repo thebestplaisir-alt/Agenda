@@ -26,19 +26,19 @@ kotlin {
         compilerOptions {
             freeCompilerArgs.addAll(
                 "-Xoverride-konan-properties",
-                "clangFlags.apple_sdk=-D_DARWIN_C_SOURCE -Wno-error=non-modular-include-in-framework-module"
+                "clangFlags.apple_sdk=-D_DARWIN_C_SOURCE -Wno-error=non-modular-include-in-framework-module",
+                "-Xverbose-phases=Linker" // Pour voir l'erreur exacte du linker dans les logs
             )
         }
 
         compilations.configureEach {
             cinterops.configureEach {
-                // On laisse les réglages par défaut pour le cinterop global
                 compilerOpts("-D_DARWIN_C_SOURCE")
             }
         }
         
         binaries.all {
-            linkerOpts("-Xlinker", "-no_warn_duplicate_libraries", "-lc++", "-ObjC")
+            linkerOpts("-lc++", "-ObjC")
         }
     }
 
@@ -50,7 +50,7 @@ kotlin {
         
         framework {
             baseName = "shared"
-            isStatic = true 
+            isStatic = false // On passe en dynamique pour éviter les duplications de symboles Firebase
         }
         
         pod("FirebaseCore") { 
@@ -66,8 +66,8 @@ kotlin {
             extraOpts += listOf("-compiler-option", "-fmodules")
         }
         
-        extraSpecAttributes["pod_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO', 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.inchios.agenda.shared', 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES', 'CLANG_ENABLE_MODULES' => 'NO' }"
-        extraSpecAttributes["user_target_xcconfig"] = "{ 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES', 'CLANG_ENABLE_MODULES' => 'NO' }"
+        extraSpecAttributes["pod_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO', 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.inchios.agenda.shared', 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES', 'CLANG_ENABLE_MODULES' => 'YES' }"
+        extraSpecAttributes["user_target_xcconfig"] = "{ 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES', 'CLANG_ENABLE_MODULES' => 'YES' }"
     }
 
     sourceSets {
