@@ -52,9 +52,18 @@ kotlin {
             isStatic = true
         }
         
-        pod("FirebaseCore") { version = "10.24.0" }
-        pod("FirebaseAuth") { version = "10.24.0" }
-        pod("FirebaseFirestore") { version = "10.24.0" }
+        pod("FirebaseCore") { 
+            version = "10.24.0"
+            extraOpts += listOf("-compiler-option", "-fmodules")
+        }
+        pod("FirebaseAuth") { 
+            version = "10.24.0"
+            extraOpts += listOf("-compiler-option", "-fmodules")
+        }
+        pod("FirebaseFirestore") { 
+            version = "10.24.0"
+            extraOpts += listOf("-compiler-option", "-fmodules")
+        }
         
         extraSpecAttributes["pod_target_xcconfig"] = "{ 'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO', 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.inchios.agenda.shared', 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES', 'CLANG_ENABLE_MODULES' => 'YES' }"
         extraSpecAttributes["user_target_xcconfig"] = "{ 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES', 'CLANG_ENABLE_MODULES' => 'YES' }"
