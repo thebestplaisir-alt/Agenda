@@ -38,6 +38,7 @@ kotlin {
         binaries.all {
             linkerOpts("-ObjC", "-lsqlite3", "-lz")
             freeCompilerArgs += "-Xbinary=bundleId=com.inchios.agenda.shared"
+            freeCompilerArgs += "-Xbinary=objcExportIgnoreFrameworkDirectives=true"
         }
     }
 
@@ -49,7 +50,7 @@ kotlin {
         
         framework {
             baseName = "shared"
-            isStatic = true
+            isStatic = false
         }
         
         pod("FirebaseAuth") { 
