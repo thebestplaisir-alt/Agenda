@@ -38,7 +38,7 @@ target 'iosApp' do
           config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
           config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'GRPC_BAZEL_BUILD=1'
           config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'OPENSSL_NO_ASM=1'
-          config.build_settings['CLANG_ENABLE_MODULES'] = 'NO'
+          # On laisse CLANG_ENABLE_MODULES par défaut (YES) car Kotlin en a besoin
         end
       end
     end

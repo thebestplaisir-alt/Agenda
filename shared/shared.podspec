@@ -10,7 +10,6 @@ Pod::Spec.new do |spec|
     spec.libraries                = 'c++'
     spec.ios.deployment_target    = '16.0'
     spec.dependency 'FirebaseAuth', '10.24.0'
-    spec.dependency 'FirebaseCore', '10.24.0'
     spec.dependency 'FirebaseFirestore', '10.24.0'
                 
     if !Dir.exist?('build/cocoapods/framework/shared.framework') || Dir.empty?('build/cocoapods/framework/shared.framework')
