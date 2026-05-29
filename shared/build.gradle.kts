@@ -33,7 +33,7 @@ kotlin {
 
         compilations.configureEach {
             cinterops.configureEach {
-                compilerOpts("-D_DARWIN_C_SOURCE")
+                compilerOpts("-D_DARWIN_C_SOURCE", "-fmodules")
             }
         }
         
