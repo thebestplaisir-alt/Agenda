@@ -38,7 +38,7 @@ kotlin {
         }
         
         binaries.all {
-            linkerOpts("-Xlinker", "-no_warn_duplicate_libraries", "-lc++")
+            linkerOpts("-Xlinker", "-no_warn_duplicate_libraries", "-lc++", "-ObjC")
         }
     }
 
