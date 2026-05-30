@@ -38,7 +38,6 @@ kotlin {
         binaries.all {
             linkerOpts("-ObjC", "-lsqlite3", "-lz")
             freeCompilerArgs += "-Xbinary=bundleId=com.inchios.agenda.shared"
-            freeCompilerArgs += "-Xbinary=objcExportIgnoreFrameworkDirectives=true"
         }
     }
 
@@ -55,10 +54,12 @@ kotlin {
         
         pod("FirebaseAuth") { 
             version = "10.29.0"
+            packageName = "cocoapods.FirebaseAuth"
             extraOpts += listOf("-compiler-option", "-fmodules")
         }
         pod("FirebaseFirestore") { 
             version = "10.29.0"
+            packageName = "cocoapods.FirebaseFirestore"
             extraOpts += listOf("-compiler-option", "-fmodules")
         }
         
