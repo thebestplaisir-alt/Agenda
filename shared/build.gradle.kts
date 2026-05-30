@@ -49,17 +49,15 @@ kotlin {
         
         framework {
             baseName = "shared"
-            isStatic = false
+            isStatic = true
         }
         
         pod("FirebaseAuth") { 
             version = "10.29.0"
-            packageName = "cocoapods.FirebaseAuth"
             extraOpts += listOf("-compiler-option", "-fmodules")
         }
         pod("FirebaseFirestore") { 
             version = "10.29.0"
-            packageName = "cocoapods.FirebaseFirestore"
             extraOpts += listOf("-compiler-option", "-fmodules")
         }
         

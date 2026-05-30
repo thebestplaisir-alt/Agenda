@@ -4,8 +4,8 @@ platform :ios, '16.0'
 install! 'cocoapods', :skip_user_script_phases => true
 
 target 'iosApp' do
-  # Passage en dynamique pour résoudre les conflits de symboles (FIRUserInfo)
-  use_frameworks! :linkage => :dynamic
+  # Retour au statique avec Kotlin 2.0.21 (plus stable pour Firebase)
+  use_frameworks! :linkage => :static
   use_modular_headers!
 
   pod 'shared', :path => '../shared'
