@@ -54,11 +54,11 @@ kotlin {
         }
         
         pod("FirebaseAuth") { 
-            version = "11.8.0"
+            version = "10.29.0"
             extraOpts += listOf("-compiler-option", "-fmodules")
         }
         pod("FirebaseFirestore") { 
-            version = "11.8.0"
+            version = "10.29.0"
             extraOpts += listOf("-compiler-option", "-fmodules")
         }
         
